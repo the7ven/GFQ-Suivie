@@ -8,266 +8,305 @@ let currentEditQuartier = null;
 let currentArticles = [];
 
 // Initialisation de l'application
-document.addEventListener('DOMContentLoaded', function() {
-    loadData();
-    updateDashboard();
-    renderStructures();
-    renderFactures();
-    renderQuartiers();
-    updateStructureSelect();
-    updateAllQuartiersSelects();
+document.addEventListener("DOMContentLoaded", function () {
+  loadData();
+  updateDashboard();
+  renderStructures();
+  renderFactures();
+  renderQuartiers();
+  updateStructureSelect();
+  updateAllQuartiersSelects();
 });
 
 // Gestion des données (simulation localStorage)
 function loadData() {
-    // Charger depuis localStorage si disponible
-    const savedStructures = localStorage.getItem('structures');
-    const savedFactures = localStorage.getItem('factures');
-    const savedQuartiers = localStorage.getItem('quartiers');
+  // Charger depuis localStorage si disponible
+  const savedStructures = localStorage.getItem("structures");
+  const savedFactures = localStorage.getItem("factures");
+  const savedQuartiers = localStorage.getItem("quartiers");
 
-    // Charger les quartiers
-    if (savedQuartiers) {
-        quartiers = JSON.parse(savedQuartiers);
-    } else {
-        // Quartiers par défaut pour Abidjan
-        quartiers = [
-            { id: 1, nom: "Cocody" },
-            { id: 2, nom: "Plateau" },
-            { id: 3, nom: "Adjamé" },
-            { id: 4, nom: "Yopougon" },
-            { id: 5, nom: "Marcory" },
-            { id: 6, nom: "Abobo" },
-            { id: 7, nom: "Koumassi" },
-            { id: 8, nom: "Treichville" }
-        ];
-        // Afficher un message d'information
-        setTimeout(() => {
-            if (confirm('Bienvenue ! Les quartiers d\'Abidjan sont chargés par défaut.\n\nVoulez-vous les personnaliser maintenant ?')) {
-                switchTab('configuration');
-            }
-        }, 500);
-    }
+  // Charger les quartiers
+  if (savedQuartiers) {
+    quartiers = JSON.parse(savedQuartiers);
+  } else {
+    // Quartiers par défaut pour Abidjan
+    quartiers = [
+      { id: 1, nom: "Cocody" },
+      { id: 2, nom: "Plateau" },
+      { id: 3, nom: "Adjamé" },
+      { id: 4, nom: "Yopougon" },
+      { id: 5, nom: "Marcory" },
+      { id: 6, nom: "Abobo" },
+      { id: 7, nom: "Koumassi" },
+      { id: 8, nom: "Treichville" },
+    ];
+    // Afficher un message d'information
+    setTimeout(() => {
+      if (
+        confirm(
+          "Bienvenue ! Les quartiers d'Abidjan sont chargés par défaut.\n\nVoulez-vous les personnaliser maintenant ?"
+        )
+      ) {
+        switchTab("configuration");
+      }
+    }, 500);
+  }
 
-    if (savedStructures) {
-        structures = JSON.parse(savedStructures);
-    } else {
-        structures = [
-            {
-                id: 1,
-                nom: "Restaurant Le Palmier",
-                quartier: "Cocody",
-                adresse: "Rue des Jardins",
-                telephone: "+225 01 02 03 04 05",
-                email: "contact@lepalmier.com"
-            },
-            {
-                id: 2,
-                nom: "Hôtel Étoile d'Or",
-                quartier: "Plateau",
-                adresse: "Avenue Chardy",
-                telephone: "+225 07 08 09 10 11",
-                email: "info@etoiledor.com"
-            }
-        ];
-    }
+  if (savedStructures) {
+    structures = JSON.parse(savedStructures);
+  } else {
+    structures = [
+      {
+        id: 1,
+        nom: "Restaurant Le Palmier",
+        quartier: "Cocody",
+        adresse: "Rue des Jardins",
+        telephone: "+225 01 02 03 04 05",
+        email: "contact@lepalmier.com",
+      },
+      {
+        id: 2,
+        nom: "Hôtel Étoile d'Or",
+        quartier: "Plateau",
+        adresse: "Avenue Chardy",
+        telephone: "+225 07 08 09 10 11",
+        email: "info@etoiledor.com",
+      },
+    ];
+  }
 
-    if (savedFactures) {
-        factures = JSON.parse(savedFactures);
-    } else {
-        factures = [
-            {
-                id: 1,
-                structureId: 1,
-                numero: "FACT-001",
-                description: "Services de restauration - Septembre 2025",
-                articles: [
-                    { designation: "Menu déjeuner", quantite: 50, prixUnitaire: 5000, total: 250000 },
-                    { designation: "Menu dîner", quantite: 30, prixUnitaire: 7000, total: 210000 }
-                ],
-                montant: 460000,
-                tva: 18,
-                remise: 0,
-                notes: "Paiement sous 30 jours",
-                dateEmission: "2025-09-01",
-                dateEcheance: "2025-10-01",
-                statut: "payée"
-            },
-            {
-                id: 2,
-                structureId: 1,
-                numero: "FACT-002",
-                description: "Fournitures et services - Octobre 2025",
-                articles: [
-                    { designation: "Service traiteur", quantite: 1, prixUnitaire: 750000, total: 750000 }
-                ],
-                montant: 750000,
-                tva: 18,
-                remise: 0,
-                notes: "",
-                dateEmission: "2025-10-01",
-                dateEcheance: "2025-11-01",
-                statut: "impayée"
-            }
-        ];
-    }
+  if (savedFactures) {
+    factures = JSON.parse(savedFactures);
+  } else {
+    factures = [
+      {
+        id: 1,
+        structureId: 1,
+        numero: "FACT-001",
+        description: "Services de restauration - Septembre 2025",
+        articles: [
+          {
+            designation: "Menu déjeuner",
+            quantite: 50,
+            prixUnitaire: 5000,
+            total: 250000,
+          },
+          {
+            designation: "Menu dîner",
+            quantite: 30,
+            prixUnitaire: 7000,
+            total: 210000,
+          },
+        ],
+        montant: 460000,
+        tva: 18,
+        remise: 0,
+        notes: "Paiement sous 30 jours",
+        dateEmission: "2025-09-01",
+        dateEcheance: "2025-10-01",
+        statut: "payée",
+      },
+      {
+        id: 2,
+        structureId: 1,
+        numero: "FACT-002",
+        description: "Fournitures et services - Octobre 2025",
+        articles: [
+          {
+            designation: "Service traiteur",
+            quantite: 1,
+            prixUnitaire: 750000,
+            total: 750000,
+          },
+        ],
+        montant: 750000,
+        tva: 18,
+        remise: 0,
+        notes: "",
+        dateEmission: "2025-10-01",
+        dateEcheance: "2025-11-01",
+        statut: "impayée",
+      },
+    ];
+  }
 }
 
 function saveData() {
-    localStorage.setItem('structures', JSON.stringify(structures));
-    localStorage.setItem('factures', JSON.stringify(factures));
-    localStorage.setItem('quartiers', JSON.stringify(quartiers));
+  localStorage.setItem("structures", JSON.stringify(structures));
+  localStorage.setItem("factures", JSON.stringify(factures));
+  localStorage.setItem("quartiers", JSON.stringify(quartiers));
 }
 
 // Gestion des onglets
 function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-    });
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  document.querySelectorAll(".tab-content").forEach((content) => {
+    content.classList.remove("active");
+  });
 
-    const clickedButton = Array.from(document.querySelectorAll('.tab-btn')).find(
-        btn => btn.getAttribute('onclick').includes(tabName)
-    );
-    if (clickedButton) clickedButton.classList.add('active');
-    
-    document.getElementById(tabName).classList.add('active');
+  const clickedButton = Array.from(document.querySelectorAll(".tab-btn")).find(
+    (btn) => btn.getAttribute("onclick").includes(tabName)
+  );
+  if (clickedButton) clickedButton.classList.add("active");
 
-    if (tabName === 'dashboard') {
-        updateDashboard();
-    } else if (tabName === 'structures') {
-        renderStructures();
-    } else if (tabName === 'factures') {
-        renderFactures();
-    } else if (tabName === 'configuration') {
-        renderQuartiers();
-    }
+  document.getElementById(tabName).classList.add("active");
+
+  if (tabName === "dashboard") {
+    updateDashboard();
+  } else if (tabName === "structures") {
+    renderStructures();
+  } else if (tabName === "factures") {
+    renderFactures();
+  } else if (tabName === "configuration") {
+    renderQuartiers();
+  }
 }
 
 // GESTION DES QUARTIERS
 function showQuartierForm() {
-    currentEditQuartier = null;
-    document.getElementById('quartierForm').classList.add('active');
-    document.getElementById('quartierNom').value = '';
-    document.getElementById('quartierNom').focus();
+  currentEditQuartier = null;
+  document.getElementById("quartierForm").classList.add("active");
+  document.getElementById("quartierNom").value = "";
+  document.getElementById("quartierNom").focus();
 }
 
 function cancelQuartierForm() {
-    document.getElementById('quartierForm').classList.remove('active');
-    currentEditQuartier = null;
+  document.getElementById("quartierForm").classList.remove("active");
+  currentEditQuartier = null;
 }
 
 function saveQuartier() {
-    const nomInput = document.getElementById('quartierNom');
-    
-    if (!nomInput) {
-        console.error('Élément quartierNom introuvable');
-        alert('Erreur: formulaire non trouvé. Rechargez la page.');
-        return;
-    }
-    
-    const nom = nomInput.value.trim();
+  const nomInput = document.getElementById("quartierNom");
 
-    if (!nom) {
-        alert('Veuillez entrer le nom du quartier');
-        nomInput.focus();
-        return;
-    }
+  if (!nomInput) {
+    console.error("Élément quartierNom introuvable");
+    alert("Erreur: formulaire non trouvé. Rechargez la page.");
+    return;
+  }
 
-    // Vérifier les doublons
-    const existe = quartiers.find(q => 
-        q.nom.toLowerCase() === nom.toLowerCase() && q.id !== currentEditQuartier
-    );
-    
-    if (existe) {
-        alert('Ce quartier existe déjà !');
-        nomInput.focus();
-        return;
-    }
+  const nom = nomInput.value.trim();
 
-    if (currentEditQuartier) {
-        // Modification
-        const index = quartiers.findIndex(q => q.id === currentEditQuartier);
-        const oldNom = quartiers[index].nom;
-        quartiers[index].nom = nom;
-        
-        // Mettre à jour les structures qui utilisent ce quartier
-        structures.forEach(s => {
-            if (s.quartier === oldNom) {
-                s.quartier = nom;
-            }
-        });
-    } else {
-        // Création
-        const newQuartier = {
-            id: quartiers.length > 0 ? Math.max(...quartiers.map(q => q.id)) + 1 : 1,
-            nom
-        };
-        quartiers.push(newQuartier);
-        console.log('Nouveau quartier ajouté:', newQuartier);
-    }
+  if (!nom) {
+    alert("Veuillez entrer le nom du quartier");
+    nomInput.focus();
+    return;
+  }
 
-    saveData();
-    cancelQuartierForm();
-    renderQuartiers();
-    updateAllQuartiersSelects();
-    updateDashboard();
-    
-    alert(`Quartier "${nom}" ${currentEditQuartier ? 'modifié' : 'ajouté'} avec succès !`);
+  // Vérifier les doublons
+  const existe = quartiers.find(
+    (q) =>
+      q.nom.toLowerCase() === nom.toLowerCase() && q.id !== currentEditQuartier
+  );
+
+  if (existe) {
+    alert("Ce quartier existe déjà !");
+    nomInput.focus();
+    return;
+  }
+
+  if (currentEditQuartier) {
+    // Modification
+    const index = quartiers.findIndex((q) => q.id === currentEditQuartier);
+    const oldNom = quartiers[index].nom;
+    quartiers[index].nom = nom;
+
+    // Mettre à jour les structures qui utilisent ce quartier
+    structures.forEach((s) => {
+      if (s.quartier === oldNom) {
+        s.quartier = nom;
+      }
+    });
+  } else {
+    // Création
+    const newQuartier = {
+      id:
+        quartiers.length > 0 ? Math.max(...quartiers.map((q) => q.id)) + 1 : 1,
+      nom,
+    };
+    quartiers.push(newQuartier);
+    console.log("Nouveau quartier ajouté:", newQuartier);
+  }
+
+  saveData();
+  cancelQuartierForm();
+  renderQuartiers();
+  updateAllQuartiersSelects();
+  updateDashboard();
+
+  alert(
+    `Quartier "${nom}" ${
+      currentEditQuartier ? "modifié" : "ajouté"
+    } avec succès !`
+  );
 }
 
 function editQuartier(id) {
-    const quartier = quartiers.find(q => q.id === id);
-    if (!quartier) return;
+  const quartier = quartiers.find((q) => q.id === id);
+  if (!quartier) return;
 
-    currentEditQuartier = id;
-    document.getElementById('quartierForm').classList.add('active');
-    document.getElementById('quartierNom').value = quartier.nom;
-    document.getElementById('quartierForm').scrollIntoView({ behavior: 'smooth' });
+  currentEditQuartier = id;
+  document.getElementById("quartierForm").classList.add("active");
+  document.getElementById("quartierNom").value = quartier.nom;
+  document
+    .getElementById("quartierForm")
+    .scrollIntoView({ behavior: "smooth" });
 }
 
 function deleteQuartier(id) {
-    const quartier = quartiers.find(q => q.id === id);
-    if (!quartier) return;
+  const quartier = quartiers.find((q) => q.id === id);
+  if (!quartier) return;
 
-    // Vérifier si des structures utilisent ce quartier
-    const structuresUtilisant = structures.filter(s => s.quartier === quartier.nom);
-    
-    if (structuresUtilisant.length > 0) {
-        alert(`Impossible de supprimer "${quartier.nom}".\n\n${structuresUtilisant.length} structure(s) utilisent ce quartier.\n\nVeuillez d'abord réassigner ou supprimer ces structures.`);
-        return;
-    }
+  // Vérifier si des structures utilisent ce quartier
+  const structuresUtilisant = structures.filter(
+    (s) => s.quartier === quartier.nom
+  );
 
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer le quartier "${quartier.nom}" ?`)) {
-        return;
-    }
+  if (structuresUtilisant.length > 0) {
+    alert(
+      `Impossible de supprimer "${quartier.nom}".\n\n${structuresUtilisant.length} structure(s) utilisent ce quartier.\n\nVeuillez d'abord réassigner ou supprimer ces structures.`
+    );
+    return;
+  }
 
-    quartiers = quartiers.filter(q => q.id !== id);
-    
-    saveData();
-    renderQuartiers();
-    updateAllQuartiersSelects();
-    updateDashboard();
+  if (
+    !confirm(
+      `Êtes-vous sûr de vouloir supprimer le quartier "${quartier.nom}" ?`
+    )
+  ) {
+    return;
+  }
+
+  quartiers = quartiers.filter((q) => q.id !== id);
+
+  saveData();
+  renderQuartiers();
+  updateAllQuartiersSelects();
+  updateDashboard();
 }
 
 function renderQuartiers() {
-    const quartiersList = document.getElementById('quartiersList');
-    
-    if (quartiers.length === 0) {
-        quartiersList.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">Aucun quartier configuré. Ajoutez votre premier quartier !</p>';
-        return;
-    }
+  const quartiersList = document.getElementById("quartiersList");
 
-    quartiersList.innerHTML = quartiers.map(quartier => {
-        const nbStructures = structures.filter(s => s.quartier === quartier.nom).length;
-        const facturesQuartier = factures.filter(f => {
-            const structure = structures.find(s => s.id === f.structureId);
-            return structure && structure.quartier === quartier.nom;
-        });
-        const nbFactures = facturesQuartier.length;
+  if (quartiers.length === 0) {
+    quartiersList.innerHTML =
+      '<p style="text-align: center; color: #718096; padding: 40px;">Aucun quartier configuré. Ajoutez votre premier quartier !</p>';
+    return;
+  }
 
-        return `
+  quartiersList.innerHTML = quartiers
+    .map((quartier) => {
+      const nbStructures = structures.filter(
+        (s) => s.quartier === quartier.nom
+      ).length;
+      const facturesQuartier = factures.filter((f) => {
+        const structure = structures.find((s) => s.id === f.structureId);
+        return structure && structure.quartier === quartier.nom;
+      });
+      const nbFactures = facturesQuartier.length;
+
+      return `
             <div class="structure-card">
                 <div class="structure-header">
                     <div>
@@ -283,81 +322,100 @@ function renderQuartiers() {
                 </div>
             </div>
         `;
-    }).join('');
+    })
+    .join("");
 }
 
 function updateAllQuartiersSelects() {
-    // Mettre à jour tous les selects de quartiers dans l'application
-    const selects = [
-        document.getElementById('structureQuartier'),
-        document.getElementById('filterQuartier')
-    ];
+  // Mettre à jour tous les selects de quartiers dans l'application
+  const selects = [
+    document.getElementById("structureQuartier"),
+    document.getElementById("filterQuartier"),
+  ];
 
-    selects.forEach(select => {
-        if (!select) return;
-        
-        const currentValue = select.value;
-        const isFilter = select.id === 'filterQuartier';
-        
-        select.innerHTML = (isFilter ? '<option value="">Tous les quartiers</option>' : '<option value="">Sélectionner un quartier</option>') +
-            quartiers.map(q => `<option value="${q.nom}">${q.nom}</option>`).join('');
-        
-        // Restaurer la valeur sélectionnée si elle existe encore
-        if (currentValue && quartiers.find(q => q.nom === currentValue)) {
-            select.value = currentValue;
-        }
-    });
+  selects.forEach((select) => {
+    if (!select) return;
+
+    const currentValue = select.value;
+    const isFilter = select.id === "filterQuartier";
+
+    select.innerHTML =
+      (isFilter
+        ? '<option value="">Tous les quartiers</option>'
+        : '<option value="">Sélectionner un quartier</option>') +
+      quartiers
+        .map((q) => `<option value="${q.nom}">${q.nom}</option>`)
+        .join("");
+
+    // Restaurer la valeur sélectionnée si elle existe encore
+    if (currentValue && quartiers.find((q) => q.nom === currentValue)) {
+      select.value = currentValue;
+    }
+  });
 }
 
 function resetToDefaultQuartiers() {
-    if (!confirm('Êtes-vous sûr de vouloir réinitialiser avec les quartiers d\'Abidjan par défaut ?\n\nCela supprimera vos quartiers personnalisés (mais pas vos structures et factures).')) {
-        return;
-    }
+  if (
+    !confirm(
+      "Êtes-vous sûr de vouloir réinitialiser avec les quartiers d'Abidjan par défaut ?\n\nCela supprimera vos quartiers personnalisés (mais pas vos structures et factures)."
+    )
+  ) {
+    return;
+  }
 
-    quartiers = [
-        { id: 1, nom: "Cocody" },
-        { id: 2, nom: "Plateau" },
-        { id: 3, nom: "Adjamé" },
-        { id: 4, nom: "Yopougon" },
-        { id: 5, nom: "Marcory" },
-        { id: 6, nom: "Abobo" },
-        { id: 7, nom: "Koumassi" },
-        { id: 8, nom: "Treichville" }
-    ];
+  quartiers = [
+    { id: 1, nom: "Cocody" },
+    { id: 2, nom: "Plateau" },
+    { id: 3, nom: "Adjamé" },
+    { id: 4, nom: "Yopougon" },
+    { id: 5, nom: "Marcory" },
+    { id: 6, nom: "Abobo" },
+    { id: 7, nom: "Koumassi" },
+    { id: 8, nom: "Treichville" },
+  ];
 
-    saveData();
-    renderQuartiers();
-    updateAllQuartiersSelects();
-    updateDashboard();
-    
-    alert('Quartiers réinitialisés avec succès !');
+  saveData();
+  renderQuartiers();
+  updateAllQuartiersSelects();
+  updateDashboard();
+
+  alert("Quartiers réinitialisés avec succès !");
 }
 
 // DASHBOARD
 function updateDashboard() {
-    const quartiers = [...new Set(structures.map(s => s.quartier))];
-    const dashboardGrid = document.getElementById('dashboardGrid');
-    
-    if (quartiers.length === 0) {
-        dashboardGrid.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">Aucune structure enregistrée. Ajoutez des structures pour voir les statistiques.</p>';
-        return;
-    }
+  const quartiers = [...new Set(structures.map((s) => s.quartier))];
+  const dashboardGrid = document.getElementById("dashboardGrid");
 
-    dashboardGrid.innerHTML = quartiers.map(quartier => {
-        const structuresQuartier = structures.filter(s => s.quartier === quartier);
-        const facturesQuartier = factures.filter(f => {
-            const structure = structures.find(s => s.id === f.structureId);
-            return structure && structure.quartier === quartier;
-        });
+  if (quartiers.length === 0) {
+    dashboardGrid.innerHTML =
+      '<p style="text-align: center; color: #718096; padding: 40px;">Aucune structure enregistrée. Ajoutez des structures pour voir les statistiques.</p>';
+    return;
+  }
 
-        const totalFactures = facturesQuartier.length;
-        const montantTotal = facturesQuartier.reduce((sum, f) => sum + f.montant, 0);
-        const montantImpaye = facturesQuartier
-            .filter(f => f.statut !== 'payée')
-            .reduce((sum, f) => sum + f.montant, 0);
-        const facturesEnRetard = facturesQuartier.filter(f => f.statut === 'en retard').length;
+  dashboardGrid.innerHTML = quartiers
+    .map((quartier) => {
+      const structuresQuartier = structures.filter(
+        (s) => s.quartier === quartier
+      );
+      const facturesQuartier = factures.filter((f) => {
+        const structure = structures.find((s) => s.id === f.structureId);
+        return structure && structure.quartier === quartier;
+      });
 
-        return `
+      const totalFactures = facturesQuartier.length;
+      const montantTotal = facturesQuartier.reduce(
+        (sum, f) => sum + f.montant,
+        0
+      );
+      const montantImpaye = facturesQuartier
+        .filter((f) => f.statut !== "payée")
+        .reduce((sum, f) => sum + f.montant, 0);
+      const facturesEnRetard = facturesQuartier.filter(
+        (f) => f.statut === "en retard"
+      ).length;
+
+      return `
             <div class="quartier-card" onclick="showQuartierFactures('${quartier}')" style="cursor: pointer;">
                 <h3>📍 ${quartier}</h3>
                 <div class="stat-row">
@@ -370,11 +428,15 @@ function updateDashboard() {
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Montant total:</span>
-                    <span class="stat-value montant-total">${formatMontant(montantTotal)} FCFA</span>
+                    <span class="stat-value montant-total">${formatMontant(
+                      montantTotal
+                    )} FCFA</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Montant impayé:</span>
-                    <span class="stat-value montant-impaye">${formatMontant(montantImpaye)} FCFA</span>
+                    <span class="stat-value montant-impaye">${formatMontant(
+                      montantImpaye
+                    )} FCFA</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Factures en retard:</span>
@@ -385,29 +447,34 @@ function updateDashboard() {
                 </div>
             </div>
         `;
-    }).join('');
+    })
+    .join("");
 }
 
 function showQuartierFactures(quartier) {
-    // Filtrer les factures du quartier
-    const facturesQuartier = factures.filter(f => {
-        const structure = structures.find(s => s.id === f.structureId);
-        return structure && structure.quartier === quartier;
-    });
+  // Filtrer les factures du quartier
+  const facturesQuartier = factures.filter((f) => {
+    const structure = structures.find((s) => s.id === f.structureId);
+    return structure && structure.quartier === quartier;
+  });
 
-    if (facturesQuartier.length === 0) {
-        alert(`Aucune facture trouvée pour le quartier ${quartier}`);
-        return;
-    }
+  if (facturesQuartier.length === 0) {
+    alert(`Aucune facture trouvée pour le quartier ${quartier}`);
+    return;
+  }
 
-    // Calculer les statistiques
-    const montantTotal = facturesQuartier.reduce((sum, f) => sum + f.montant, 0);
-    const montantPaye = facturesQuartier.filter(f => f.statut === 'payée').reduce((sum, f) => sum + f.montant, 0);
-    const montantImpaye = facturesQuartier.filter(f => f.statut !== 'payée').reduce((sum, f) => sum + f.montant, 0);
+  // Calculer les statistiques
+  const montantTotal = facturesQuartier.reduce((sum, f) => sum + f.montant, 0);
+  const montantPaye = facturesQuartier
+    .filter((f) => f.statut === "payée")
+    .reduce((sum, f) => sum + f.montant, 0);
+  const montantImpaye = facturesQuartier
+    .filter((f) => f.statut !== "payée")
+    .reduce((sum, f) => sum + f.montant, 0);
 
-    // Créer une fenêtre modale
-    const modal = document.createElement('div');
-    modal.style.cssText = `
+  // Créer une fenêtre modale
+  const modal = document.createElement("div");
+  modal.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
@@ -421,8 +488,8 @@ function showQuartierFactures(quartier) {
         padding: 20px;
     `;
 
-    const modalContent = document.createElement('div');
-    modalContent.style.cssText = `
+  const modalContent = document.createElement("div");
+  modalContent.style.cssText = `
         background: white;
         border-radius: 15px;
         padding: 30px;
@@ -433,7 +500,7 @@ function showQuartierFactures(quartier) {
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     `;
 
-    modalContent.innerHTML = `
+  modalContent.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 3px solid #4c51bf; padding-bottom: 15px;">
             <h2 style="color: #4c51bf; margin: 0;">📍 Factures du quartier ${quartier}</h2>
             <button onclick="this.closest('[style*=fixed]').remove()" style="background: #e53e3e; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: 600;">✖ Fermer</button>
@@ -442,19 +509,27 @@ function showQuartierFactures(quartier) {
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; background: #f7fafc; padding: 20px; border-radius: 10px;">
             <div>
                 <div style="color: #718096; font-size: 0.9em; margin-bottom: 5px;">Total factures</div>
-                <div style="font-size: 1.5em; font-weight: 700; color: #2d3748;">${facturesQuartier.length}</div>
+                <div style="font-size: 1.5em; font-weight: 700; color: #2d3748;">${
+                  facturesQuartier.length
+                }</div>
             </div>
             <div>
                 <div style="color: #718096; font-size: 0.9em; margin-bottom: 5px;">Montant total</div>
-                <div style="font-size: 1.5em; font-weight: 700; color: #4c51bf;">${formatMontant(montantTotal)} FCFA</div>
+                <div style="font-size: 1.5em; font-weight: 700; color: #4c51bf;">${formatMontant(
+                  montantTotal
+                )} FCFA</div>
             </div>
             <div>
                 <div style="color: #718096; font-size: 0.9em; margin-bottom: 5px;">Montant payé</div>
-                <div style="font-size: 1.5em; font-weight: 700; color: #28a745;">${formatMontant(montantPaye)} FCFA</div>
+                <div style="font-size: 1.5em; font-weight: 700; color: #28a745;">${formatMontant(
+                  montantPaye
+                )} FCFA</div>
             </div>
             <div>
                 <div style="color: #718096; font-size: 0.9em; margin-bottom: 5px;">Montant impayé</div>
-                <div style="font-size: 1.5em; font-weight: 700; color: #dc3545;">${formatMontant(montantImpaye)} FCFA</div>
+                <div style="font-size: 1.5em; font-weight: 700; color: #dc3545;">${formatMontant(
+                  montantImpaye
+                )} FCFA</div>
             </div>
         </div>
 
@@ -472,227 +547,304 @@ function showQuartierFactures(quartier) {
                 </tr>
             </thead>
             <tbody>
-                ${facturesQuartier.sort((a, b) => new Date(b.dateEmission) - new Date(a.dateEmission)).map(facture => {
-                    const structure = structures.find(s => s.id === facture.structureId);
-                    const statusClass = facture.statut === 'payée' ? 'status-payee' : 
-                                       facture.statut === 'en retard' ? 'status-retard' : 'status-impayee';
-                    
+                ${facturesQuartier
+                  .sort(
+                    (a, b) =>
+                      new Date(b.dateEmission) - new Date(a.dateEmission)
+                  )
+                  .map((facture) => {
+                    const structure = structures.find(
+                      (s) => s.id === facture.structureId
+                    );
+                    const statusClass =
+                      facture.statut === "payée"
+                        ? "status-payee"
+                        : facture.statut === "en retard"
+                        ? "status-retard"
+                        : "status-impayee";
+
                     return `
                         <tr style="border-bottom: 1px solid #e2e8f0;">
-                            <td style="padding: 12px;"><strong>${facture.numero}</strong></td>
-                            <td style="padding: 12px;">${structure ? structure.nom : 'N/A'}</td>
+                            <td style="padding: 12px;"><strong>${
+                              facture.numero
+                            }</strong></td>
+                            <td style="padding: 12px;">${
+                              structure ? structure.nom : "N/A"
+                            }</td>
                             <td style="padding: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                ${facture.description || '-'}
+                                ${facture.description || "-"}
                             </td>
-                            <td style="padding: 12px; text-align: right;"><strong>${formatMontant(facture.montant)} FCFA</strong></td>
-                            <td style="padding: 12px; text-align: center;">${formatDate(facture.dateEmission)}</td>
-                            <td style="padding: 12px; text-align: center;">${formatDate(facture.dateEcheance)}</td>
+                            <td style="padding: 12px; text-align: right;"><strong>${formatMontant(
+                              facture.montant
+                            )} FCFA</strong></td>
+                            <td style="padding: 12px; text-align: center;">${formatDate(
+                              facture.dateEmission
+                            )}</td>
+                            <td style="padding: 12px; text-align: center;">${formatDate(
+                              facture.dateEcheance
+                            )}</td>
                             <td style="padding: 12px; text-align: center;">
-                                <span class="status-badge ${statusClass}">${capitalizeFirst(facture.statut)}</span>
+                                <span class="status-badge ${statusClass}">${capitalizeFirst(
+                      facture.statut
+                    )}</span>
                             </td>
                             <td style="padding: 12px; text-align: center;">
-                                <button class="btn-edit" onclick="event.stopPropagation(); viewFacture(${facture.id})" title="Voir/Imprimer" style="margin-right: 5px;">👁️</button>
-                                <button class="btn-edit" onclick="event.stopPropagation(); editFacture(${facture.id}); document.querySelector('[style*=fixed]').remove(); switchTab('factures');" title="Modifier">✏️</button>
+                                <button class="btn-edit" onclick="event.stopPropagation(); viewFacture(${
+                                  facture.id
+                                })" title="Voir/Imprimer" style="margin-right: 5px;">👁️</button>
+                                <button class="btn-edit" onclick="event.stopPropagation(); editFacture(${
+                                  facture.id
+                                }); document.querySelector('[style*=fixed]').remove(); switchTab('factures');" title="Modifier">✏️</button>
                             </td>
                         </tr>
                     `;
-                }).join('')}
+                  })
+                  .join("")}
             </tbody>
         </table>
     `;
 
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
 
-    // Fermer la modale en cliquant à l'extérieur
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
+  // Fermer la modale en cliquant à l'extérieur
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
 }
 
 // STRUCTURES
 function showStructureForm() {
-    currentEditStructure = null;
-    document.getElementById('structureForm').classList.add('active');
-    document.getElementById('structureNom').value = '';
-    document.getElementById('structureQuartier').value = '';
-    document.getElementById('structureAdresse').value = '';
-    document.getElementById('structureTelephone').value = '';
-    document.getElementById('structureEmail').value = '';
+  currentEditStructure = null;
+  document.getElementById("structureForm").classList.add("active");
+  document.getElementById("structureNom").value = "";
+  document.getElementById("structureQuartier").value = "";
+  document.getElementById("structureAdresse").value = "";
+  document.getElementById("structureTelephone").value = "";
+  document.getElementById("structureEmail").value = "";
 }
 
 function cancelStructureForm() {
-    document.getElementById('structureForm').classList.remove('active');
-    currentEditStructure = null;
+  document.getElementById("structureForm").classList.remove("active");
+  currentEditStructure = null;
 }
 
 function saveStructure() {
-    const nom = document.getElementById('structureNom').value.trim();
-    const quartier = document.getElementById('structureQuartier').value;
-    const adresse = document.getElementById('structureAdresse').value.trim();
-    const telephone = document.getElementById('structureTelephone').value.trim();
-    const email = document.getElementById('structureEmail').value.trim();
+  const nom = document.getElementById("structureNom").value.trim();
+  const quartier = document.getElementById("structureQuartier").value;
+  const adresse = document.getElementById("structureAdresse").value.trim();
+  const telephone = document.getElementById("structureTelephone").value.trim();
+  const email = document.getElementById("structureEmail").value.trim();
 
-    if (!nom || !quartier) {
-        alert('Veuillez remplir tous les champs obligatoires (*)');
-        return;
-    }
+  if (!nom || !quartier) {
+    alert("Veuillez remplir tous les champs obligatoires (*)");
+    return;
+  }
 
-    if (currentEditStructure) {
-        const index = structures.findIndex(s => s.id === currentEditStructure);
-        structures[index] = {
-            ...structures[index],
-            nom,
-            quartier,
-            adresse,
-            telephone,
-            email
-        };
-    } else {
-        const newStructure = {
-            id: structures.length > 0 ? Math.max(...structures.map(s => s.id)) + 1 : 1,
-            nom,
-            quartier,
-            adresse,
-            telephone,
-            email
-        };
-        structures.push(newStructure);
-    }
+  if (currentEditStructure) {
+    const index = structures.findIndex((s) => s.id === currentEditStructure);
+    structures[index] = {
+      ...structures[index],
+      nom,
+      quartier,
+      adresse,
+      telephone,
+      email,
+    };
+  } else {
+    const newStructure = {
+      id:
+        structures.length > 0
+          ? Math.max(...structures.map((s) => s.id)) + 1
+          : 1,
+      nom,
+      quartier,
+      adresse,
+      telephone,
+      email,
+    };
+    structures.push(newStructure);
+  }
 
-    saveData();
-    cancelStructureForm();
-    renderStructures();
-    updateStructureSelect();
-    updateDashboard();
+  saveData();
+  cancelStructureForm();
+  renderStructures();
+  updateStructureSelect();
+  updateDashboard();
 }
 
 function editStructure(id) {
-    const structure = structures.find(s => s.id === id);
-    if (!structure) return;
+  const structure = structures.find((s) => s.id === id);
+  if (!structure) return;
 
-    currentEditStructure = id;
-    document.getElementById('structureForm').classList.add('active');
-    document.getElementById('structureNom').value = structure.nom;
-    document.getElementById('structureQuartier').value = structure.quartier;
-    document.getElementById('structureAdresse').value = structure.adresse || '';
-    document.getElementById('structureTelephone').value = structure.telephone || '';
-    document.getElementById('structureEmail').value = structure.email || '';
+  currentEditStructure = id;
+  document.getElementById("structureForm").classList.add("active");
+  document.getElementById("structureNom").value = structure.nom;
+  document.getElementById("structureQuartier").value = structure.quartier;
+  document.getElementById("structureAdresse").value = structure.adresse || "";
+  document.getElementById("structureTelephone").value =
+    structure.telephone || "";
+  document.getElementById("structureEmail").value = structure.email || "";
 
-    document.getElementById('structureForm').scrollIntoView({ behavior: 'smooth' });
+  document
+    .getElementById("structureForm")
+    .scrollIntoView({ behavior: "smooth" });
 }
 
 function deleteStructure(id) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette structure ? Toutes ses factures seront également supprimées.')) {
-        return;
-    }
+  if (
+    !confirm(
+      "Êtes-vous sûr de vouloir supprimer cette structure ? Toutes ses factures seront également supprimées."
+    )
+  ) {
+    return;
+  }
 
-    structures = structures.filter(s => s.id !== id);
-    factures = factures.filter(f => f.structureId !== id);
-    
-    saveData();
-    renderStructures();
-    updateStructureSelect();
-    updateDashboard();
+  structures = structures.filter((s) => s.id !== id);
+  factures = factures.filter((f) => f.structureId !== id);
+
+  saveData();
+  renderStructures();
+  updateStructureSelect();
+  updateDashboard();
 }
 
 function filterStructures() {
-    const searchTerm = document.getElementById('searchStructure').value.toLowerCase();
-    const quartierFilter = document.getElementById('filterQuartier').value;
+  const searchTerm = document
+    .getElementById("searchStructure")
+    .value.toLowerCase();
+  const quartierFilter = document.getElementById("filterQuartier").value;
 
-    const filtered = structures.filter(s => {
-        const matchSearch = s.nom.toLowerCase().includes(searchTerm) ||
-                          (s.adresse && s.adresse.toLowerCase().includes(searchTerm));
-        const matchQuartier = !quartierFilter || s.quartier === quartierFilter;
-        return matchSearch && matchQuartier;
-    });
+  const filtered = structures.filter((s) => {
+    const matchSearch =
+      s.nom.toLowerCase().includes(searchTerm) ||
+      (s.adresse && s.adresse.toLowerCase().includes(searchTerm));
+    const matchQuartier = !quartierFilter || s.quartier === quartierFilter;
+    return matchSearch && matchQuartier;
+  });
 
-    renderStructures(filtered);
+  renderStructures(filtered);
 }
 
 function renderStructures(structuresToRender = structures) {
-    const structuresList = document.getElementById('structuresList');
-    
-    if (structuresToRender.length === 0) {
-        structuresList.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">Aucune structure trouvée.</p>';
-        return;
-    }
+  const structuresList = document.getElementById("structuresList");
 
-    structuresList.innerHTML = structuresToRender.map(structure => {
-        const structureFactures = factures.filter(f => f.structureId === structure.id);
-        const totalFactures = structureFactures.length;
-        const montantTotal = structureFactures.reduce((sum, f) => sum + f.montant, 0);
+  if (structuresToRender.length === 0) {
+    structuresList.innerHTML =
+      '<p style="text-align: center; color: #718096; padding: 40px;">Aucune structure trouvée.</p>';
+    return;
+  }
 
-        return `
+  structuresList.innerHTML = structuresToRender
+    .map((structure) => {
+      const structureFactures = factures.filter(
+        (f) => f.structureId === structure.id
+      );
+      const totalFactures = structureFactures.length;
+      const montantTotal = structureFactures.reduce(
+        (sum, f) => sum + f.montant,
+        0
+      );
+
+      return `
             <div class="structure-card">
                 <div class="structure-header">
                     <div>
                         <div class="structure-name">${structure.nom}</div>
-                        <span class="quartier-badge">${structure.quartier}</span>
-                        ${structure.adresse ? `<div class="structure-info">📍 ${structure.adresse}</div>` : ''}
-                        ${structure.telephone ? `<div class="structure-info">📞 ${structure.telephone}</div>` : ''}
-                        ${structure.email ? `<div class="structure-info">📧 ${structure.email}</div>` : ''}
+                        <span class="quartier-badge">${
+                          structure.quartier
+                        }</span>
+                        ${
+                          structure.adresse
+                            ? `<div class="structure-info">📍 ${structure.adresse}</div>`
+                            : ""
+                        }
+                        ${
+                          structure.telephone
+                            ? `<div class="structure-info">📞 ${structure.telephone}</div>`
+                            : ""
+                        }
+                        ${
+                          structure.email
+                            ? `<div class="structure-info">📧 ${structure.email}</div>`
+                            : ""
+                        }
                         <div class="structure-info" style="margin-top: 10px; font-weight: 600;">
-                            ${totalFactures} facture(s) • ${formatMontant(montantTotal)} FCFA
+                            ${totalFactures} facture(s) • ${formatMontant(
+        montantTotal
+      )} FCFA
                         </div>
                     </div>
                     <div>
-                        <button class="btn-edit" onclick="editStructure(${structure.id})">✏️ Modifier</button>
-                        <button class="btn-delete" onclick="deleteStructure(${structure.id})">🗑️ Supprimer</button>
+                        <button class="btn-edit" onclick="editStructure(${
+                          structure.id
+                        })">✏️ Modifier</button>
+                        <button class="btn-delete" onclick="deleteStructure(${
+                          structure.id
+                        })">🗑️ Supprimer</button>
                     </div>
                 </div>
             </div>
         `;
-    }).join('');
+    })
+    .join("");
 }
 
 // FACTURES - GESTION DES ARTICLES
 function addArticleLine() {
-    const article = {
-        designation: '',
-        quantite: 1,
-        prixUnitaire: 0,
-        total: 0
-    };
-    currentArticles.push(article);
-    renderArticlesForm();
+  const article = {
+    designation: "",
+    quantite: 1,
+    prixUnitaire: 0,
+    total: 0,
+  };
+  currentArticles.push(article);
+  renderArticlesForm();
 }
 
 function removeArticleLine(index) {
-    currentArticles.splice(index, 1);
-    renderArticlesForm();
+  currentArticles.splice(index, 1);
+  renderArticlesForm();
 }
 
 function updateArticleTotal(index) {
-    const quantite = parseFloat(document.getElementById(`article_quantite_${index}`).value) || 0;
-    const prixUnitaire = parseFloat(document.getElementById(`article_prix_${index}`).value) || 0;
-    currentArticles[index].total = quantite * prixUnitaire;
-    
-    document.getElementById(`article_total_${index}`).textContent = formatMontant(currentArticles[index].total);
-    calculateFactureTotal();
+  const quantite =
+    parseFloat(document.getElementById(`article_quantite_${index}`).value) || 0;
+  const prixUnitaire =
+    parseFloat(document.getElementById(`article_prix_${index}`).value) || 0;
+  currentArticles[index].total = quantite * prixUnitaire;
+
+  document.getElementById(`article_total_${index}`).textContent = formatMontant(
+    currentArticles[index].total
+  );
+  calculateFactureTotal();
 }
 
 function calculateFactureTotal() {
-    const sousTotal = currentArticles.reduce((sum, art) => sum + art.total, 0);
-    const tva = parseFloat(document.getElementById('factureTVA').value) || 0;
-    const remise = parseFloat(document.getElementById('factureRemise').value) || 0;
-    
-    const montantRemise = sousTotal * (remise / 100);
-    const montantTVA = (sousTotal - montantRemise) * (tva / 100);
-    const total = sousTotal - montantRemise + montantTVA;
-    
-    document.getElementById('factureSousTotal').textContent = formatMontant(sousTotal);
-    document.getElementById('factureMontantRemise').textContent = formatMontant(montantRemise);
-    document.getElementById('factureMontantTVA').textContent = formatMontant(montantTVA);
-    document.getElementById('factureTotal').textContent = formatMontant(total);
+  const sousTotal = currentArticles.reduce((sum, art) => sum + art.total, 0);
+  const tva = parseFloat(document.getElementById("factureTVA").value) || 0;
+  const remise =
+    parseFloat(document.getElementById("factureRemise").value) || 0;
+
+  const montantRemise = sousTotal * (remise / 100);
+  const montantTVA = (sousTotal - montantRemise) * (tva / 100);
+  const total = sousTotal - montantRemise + montantTVA;
+
+  document.getElementById("factureSousTotal").textContent =
+    formatMontant(sousTotal);
+  document.getElementById("factureMontantRemise").textContent =
+    formatMontant(montantRemise);
+  document.getElementById("factureMontantTVA").textContent =
+    formatMontant(montantTVA);
+  document.getElementById("factureTotal").textContent = formatMontant(total);
 }
 
 function renderArticlesForm() {
-    const articlesContainer = document.getElementById('articlesContainer');
-    
-    articlesContainer.innerHTML = `
+  const articlesContainer = document.getElementById("articlesContainer");
+
+  articlesContainer.innerHTML = `
         <div style="margin-bottom: 15px;">
             <button type="button" class="btn-primary" onclick="addArticleLine()">➕ Ajouter une ligne</button>
         </div>
@@ -707,7 +859,9 @@ function renderArticlesForm() {
                 </tr>
             </thead>
             <tbody>
-                ${currentArticles.map((article, index) => `
+                ${currentArticles
+                  .map(
+                    (article, index) => `
                     <tr>
                         <td>
                             <input type="text" 
@@ -734,13 +888,17 @@ function renderArticlesForm() {
                                    onchange="currentArticles[${index}].prixUnitaire = parseFloat(this.value); updateArticleTotal(${index})">
                         </td>
                         <td style="text-align: right; font-weight: 600; padding: 8px;">
-                            <span id="article_total_${index}">${formatMontant(article.total)}</span> FCFA
+                            <span id="article_total_${index}">${formatMontant(
+                      article.total
+                    )}</span> FCFA
                         </td>
                         <td style="text-align: center;">
                             <button type="button" class="btn-delete" onclick="removeArticleLine(${index})" style="padding: 5px 10px;">🗑️</button>
                         </td>
                     </tr>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </tbody>
         </table>
         <div style="background: #f7fafc; padding: 15px; border-radius: 8px;">
@@ -762,171 +920,195 @@ function renderArticlesForm() {
             </div>
         </div>
     `;
-    
-    calculateFactureTotal();
+
+  calculateFactureTotal();
 }
 
 // FACTURES
 function showFactureForm() {
-    currentEditFacture = null;
-    currentArticles = [{ designation: '', quantite: 1, prixUnitaire: 0, total: 0 }];
-    
-    document.getElementById('factureForm').classList.add('active');
-    document.getElementById('factureStructure').value = '';
-    document.getElementById('factureNumero').value = generateFactureNumber();
-    document.getElementById('factureDescription').value = '';
-    document.getElementById('factureDateEmission').value = new Date().toISOString().split('T')[0];
-    document.getElementById('factureDateEcheance').value = '';
-    document.getElementById('factureStatut').value = 'impayée';
-    document.getElementById('factureTVA').value = '18';
-    document.getElementById('factureRemise').value = '0';
-    document.getElementById('factureNotes').value = '';
-    
-    renderArticlesForm();
+  currentEditFacture = null;
+  currentArticles = [
+    { designation: "", quantite: 1, prixUnitaire: 0, total: 0 },
+  ];
+
+  document.getElementById("factureForm").classList.add("active");
+  document.getElementById("factureStructure").value = "";
+  document.getElementById("factureNumero").value = generateFactureNumber();
+  document.getElementById("factureDescription").value = "";
+  document.getElementById("factureDateEmission").value = new Date()
+    .toISOString()
+    .split("T")[0];
+  document.getElementById("factureDateEcheance").value = "";
+  document.getElementById("factureStatut").value = "impayée";
+  document.getElementById("factureTVA").value = "18";
+  document.getElementById("factureRemise").value = "0";
+  document.getElementById("factureNotes").value = "";
+
+  renderArticlesForm();
 }
 
 function generateFactureNumber() {
-    const year = new Date().getFullYear();
-    const lastNumber = factures.length > 0 ? 
-        Math.max(...factures.map(f => {
+  const year = new Date().getFullYear();
+  const lastNumber =
+    factures.length > 0
+      ? Math.max(
+          ...factures.map((f) => {
             const match = f.numero.match(/\d+$/);
             return match ? parseInt(match[0]) : 0;
-        })) : 0;
-    return `FACT-${year}-${String(lastNumber + 1).padStart(3, '0')}`;
+          })
+        )
+      : 0;
+  return `FACT-${year}-${String(lastNumber + 1).padStart(3, "0")}`;
 }
 
 function cancelFactureForm() {
-    document.getElementById('factureForm').classList.remove('active');
-    currentEditFacture = null;
-    currentArticles = [];
+  document.getElementById("factureForm").classList.remove("active");
+  currentEditFacture = null;
+  currentArticles = [];
 }
 
 function saveFacture() {
-    const structureId = parseInt(document.getElementById('factureStructure').value);
-    const numero = document.getElementById('factureNumero').value.trim();
-    const description = document.getElementById('factureDescription').value.trim();
-    const dateEmission = document.getElementById('factureDateEmission').value;
-    const dateEcheance = document.getElementById('factureDateEcheance').value;
-    const statut = document.getElementById('factureStatut').value;
-    const tva = parseFloat(document.getElementById('factureTVA').value) || 0;
-    const remise = parseFloat(document.getElementById('factureRemise').value) || 0;
-    const notes = document.getElementById('factureNotes').value.trim();
+  const structureId = parseInt(
+    document.getElementById("factureStructure").value
+  );
+  const numero = document.getElementById("factureNumero").value.trim();
+  const description = document
+    .getElementById("factureDescription")
+    .value.trim();
+  const dateEmission = document.getElementById("factureDateEmission").value;
+  const dateEcheance = document.getElementById("factureDateEcheance").value;
+  const statut = document.getElementById("factureStatut").value;
+  const tva = parseFloat(document.getElementById("factureTVA").value) || 0;
+  const remise =
+    parseFloat(document.getElementById("factureRemise").value) || 0;
+  const notes = document.getElementById("factureNotes").value.trim();
 
-    if (!structureId || !numero || !dateEmission || !dateEcheance) {
-        alert('Veuillez remplir tous les champs obligatoires (*)');
-        return;
-    }
+  if (!structureId || !numero || !dateEmission || !dateEcheance) {
+    alert("Veuillez remplir tous les champs obligatoires (*)");
+    return;
+  }
 
-    if (currentArticles.length === 0 || !currentArticles.some(a => a.designation)) {
-        alert('Veuillez ajouter au moins un article à la facture');
-        return;
-    }
+  if (
+    currentArticles.length === 0 ||
+    !currentArticles.some((a) => a.designation)
+  ) {
+    alert("Veuillez ajouter au moins un article à la facture");
+    return;
+  }
 
-    // Mettre à jour les articles avec les valeurs actuelles
-    currentArticles.forEach((article, index) => {
-        article.designation = document.getElementById(`article_designation_${index}`).value;
-        article.quantite = parseFloat(document.getElementById(`article_quantite_${index}`).value) || 0;
-        article.prixUnitaire = parseFloat(document.getElementById(`article_prix_${index}`).value) || 0;
-        article.total = article.quantite * article.prixUnitaire;
-    });
+  // Mettre à jour les articles avec les valeurs actuelles
+  currentArticles.forEach((article, index) => {
+    article.designation = document.getElementById(
+      `article_designation_${index}`
+    ).value;
+    article.quantite =
+      parseFloat(document.getElementById(`article_quantite_${index}`).value) ||
+      0;
+    article.prixUnitaire =
+      parseFloat(document.getElementById(`article_prix_${index}`).value) || 0;
+    article.total = article.quantite * article.prixUnitaire;
+  });
 
-    // Calculer le montant total
-    const sousTotal = currentArticles.reduce((sum, art) => sum + art.total, 0);
-    const montantRemise = sousTotal * (remise / 100);
-    const montantTVA = (sousTotal - montantRemise) * (tva / 100);
-    const montant = sousTotal - montantRemise + montantTVA;
+  // Calculer le montant total
+  const sousTotal = currentArticles.reduce((sum, art) => sum + art.total, 0);
+  const montantRemise = sousTotal * (remise / 100);
+  const montantTVA = (sousTotal - montantRemise) * (tva / 100);
+  const montant = sousTotal - montantRemise + montantTVA;
 
-    if (currentEditFacture) {
-        const index = factures.findIndex(f => f.id === currentEditFacture);
-        factures[index] = {
-            ...factures[index],
-            structureId,
-            numero,
-            description,
-            articles: [...currentArticles],
-            montant,
-            tva,
-            remise,
-            notes,
-            dateEmission,
-            dateEcheance,
-            statut
-        };
-    } else {
-        const newFacture = {
-            id: factures.length > 0 ? Math.max(...factures.map(f => f.id)) + 1 : 1,
-            structureId,
-            numero,
-            description,
-            articles: [...currentArticles],
-            montant,
-            tva,
-            remise,
-            notes,
-            dateEmission,
-            dateEcheance,
-            statut
-        };
-        factures.push(newFacture);
-    }
+  if (currentEditFacture) {
+    const index = factures.findIndex((f) => f.id === currentEditFacture);
+    factures[index] = {
+      ...factures[index],
+      structureId,
+      numero,
+      description,
+      articles: [...currentArticles],
+      montant,
+      tva,
+      remise,
+      notes,
+      dateEmission,
+      dateEcheance,
+      statut,
+    };
+  } else {
+    const newFacture = {
+      id: factures.length > 0 ? Math.max(...factures.map((f) => f.id)) + 1 : 1,
+      structureId,
+      numero,
+      description,
+      articles: [...currentArticles],
+      montant,
+      tva,
+      remise,
+      notes,
+      dateEmission,
+      dateEcheance,
+      statut,
+    };
+    factures.push(newFacture);
+  }
 
-    saveData();
-    cancelFactureForm();
-    renderFactures();
-    updateDashboard();
+  saveData();
+  cancelFactureForm();
+  renderFactures();
+  updateDashboard();
 }
 
 function editFacture(id) {
-    const facture = factures.find(f => f.id === id);
-    if (!facture) return;
+  const facture = factures.find((f) => f.id === id);
+  if (!facture) return;
 
-    currentEditFacture = id;
-    currentArticles = facture.articles ? [...facture.articles] : [{ designation: '', quantite: 1, prixUnitaire: 0, total: 0 }];
-    
-    document.getElementById('factureForm').classList.add('active');
-    document.getElementById('factureStructure').value = facture.structureId;
-    document.getElementById('factureNumero').value = facture.numero;
-    document.getElementById('factureDescription').value = facture.description || '';
-    document.getElementById('factureDateEmission').value = facture.dateEmission;
-    document.getElementById('factureDateEcheance').value = facture.dateEcheance;
-    document.getElementById('factureStatut').value = facture.statut;
-    document.getElementById('factureTVA').value = facture.tva || 18;
-    document.getElementById('factureRemise').value = facture.remise || 0;
-    document.getElementById('factureNotes').value = facture.notes || '';
+  currentEditFacture = id;
+  currentArticles = facture.articles
+    ? [...facture.articles]
+    : [{ designation: "", quantite: 1, prixUnitaire: 0, total: 0 }];
 
-    renderArticlesForm();
-    document.getElementById('factureForm').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById("factureForm").classList.add("active");
+  document.getElementById("factureStructure").value = facture.structureId;
+  document.getElementById("factureNumero").value = facture.numero;
+  document.getElementById("factureDescription").value =
+    facture.description || "";
+  document.getElementById("factureDateEmission").value = facture.dateEmission;
+  document.getElementById("factureDateEcheance").value = facture.dateEcheance;
+  document.getElementById("factureStatut").value = facture.statut;
+  document.getElementById("factureTVA").value = facture.tva || 18;
+  document.getElementById("factureRemise").value = facture.remise || 0;
+  document.getElementById("factureNotes").value = facture.notes || "";
+
+  renderArticlesForm();
+  document.getElementById("factureForm").scrollIntoView({ behavior: "smooth" });
 }
 
 function deleteFacture(id) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
-        return;
-    }
+  if (!confirm("Êtes-vous sûr de vouloir supprimer cette facture ?")) {
+    return;
+  }
 
-    factures = factures.filter(f => f.id !== id);
-    
-    saveData();
-    renderFactures();
-    updateDashboard();
+  factures = factures.filter((f) => f.id !== id);
+
+  saveData();
+  renderFactures();
+  updateDashboard();
 }
 
 function viewFacture(id) {
-    const facture = factures.find(f => f.id === id);
-    if (!facture) return;
+  const facture = factures.find((f) => f.id === id);
+  if (!facture) return;
 
-    const structure = structures.find(s => s.id === facture.structureId);
-    if (!structure) {
-        alert('Structure introuvable');
-        return;
-    }
+  const structure = structures.find((s) => s.id === facture.structureId);
+  if (!structure) {
+    alert("Structure introuvable");
+    return;
+  }
 
-    // Calculer les montants
-    const sousTotal = facture.articles.reduce((sum, art) => sum + art.total, 0);
-    const montantRemise = sousTotal * (facture.remise / 100);
-    const montantTVA = (sousTotal - montantRemise) * (facture.tva / 100);
+  // Calculer les montants
+  const sousTotal = facture.articles.reduce((sum, art) => sum + art.total, 0);
+  const montantRemise = sousTotal * (facture.remise / 100);
+  const montantTVA = (sousTotal - montantRemise) * (facture.tva / 100);
 
-    const printWindow = window.open('', '', 'width=800,height=600');
-    printWindow.document.write(`
+  const printWindow = window.open("", "", "width=800,height=600");
+  printWindow.document.write(`
         <!DOCTYPE html>
         <html lang="fr">
         <head>
@@ -1051,25 +1233,45 @@ function viewFacture(id) {
                 </div>
                 <div class="facture-info">
                     <h2>FACTURE</h2>
-                    <div class="info-line"><strong>${facture.numero}</strong></div>
-                    <div class="info-line">Date: ${formatDate(facture.dateEmission)}</div>
-                    <div class="info-line">Échéance: ${formatDate(facture.dateEcheance)}</div>
+                    <div class="info-line"><strong>${
+                      facture.numero
+                    }</strong></div>
+                    <div class="info-line">Date: ${formatDate(
+                      facture.dateEmission
+                    )}</div>
+                    <div class="info-line">Échéance: ${formatDate(
+                      facture.dateEcheance
+                    )}</div>
                 </div>
             </div>
 
             <div class="client-info">
                 <h3>Facturé à:</h3>
                 <div class="info-line"><strong>${structure.nom}</strong></div>
-                <div class="info-line">📍 ${structure.quartier}${structure.adresse ? ', ' + structure.adresse : ''}</div>
-                ${structure.telephone ? `<div class="info-line">📞 ${structure.telephone}</div>` : ''}
-                ${structure.email ? `<div class="info-line">📧 ${structure.email}</div>` : ''}
+                <div class="info-line">📍 ${structure.quartier}${
+    structure.adresse ? ", " + structure.adresse : ""
+  }</div>
+                ${
+                  structure.telephone
+                    ? `<div class="info-line">📞 ${structure.telephone}</div>`
+                    : ""
+                }
+                ${
+                  structure.email
+                    ? `<div class="info-line">📧 ${structure.email}</div>`
+                    : ""
+                }
             </div>
 
-            ${facture.description ? `
+            ${
+              facture.description
+                ? `
                 <div class="description">
                     <strong>Description:</strong> ${facture.description}
                 </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <table>
                 <thead>
@@ -1081,14 +1283,22 @@ function viewFacture(id) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${facture.articles.map(article => `
+                    ${facture.articles
+                      .map(
+                        (article) => `
                         <tr>
                             <td>${article.designation}</td>
                             <td class="text-center">${article.quantite}</td>
-                            <td class="text-right">${formatMontant(article.prixUnitaire)} FCFA</td>
-                            <td class="text-right"><strong>${formatMontant(article.total)} FCFA</strong></td>
+                            <td class="text-right">${formatMontant(
+                              article.prixUnitaire
+                            )} FCFA</td>
+                            <td class="text-right"><strong>${formatMontant(
+                              article.total
+                            )} FCFA</strong></td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join("")}
                 </tbody>
             </table>
 
@@ -1097,12 +1307,16 @@ function viewFacture(id) {
                     <span>Sous-total:</span>
                     <strong>${formatMontant(sousTotal)} FCFA</strong>
                 </div>
-                ${facture.remise > 0 ? `
+                ${
+                  facture.remise > 0
+                    ? `
                     <div class="total-line" style="color: #10b981;">
                         <span>Remise (${facture.remise}%):</span>
                         <strong>- ${formatMontant(montantRemise)} FCFA</strong>
                     </div>
-                ` : ''}
+                `
+                    : ""
+                }
                 <div class="total-line">
                     <span>TVA (${facture.tva}%):</span>
                     <strong>${formatMontant(montantTVA)} FCFA</strong>
@@ -1113,12 +1327,16 @@ function viewFacture(id) {
                 </div>
             </div>
 
-            ${facture.notes ? `
+            ${
+              facture.notes
+                ? `
                 <div class="notes">
                     <h4>📝 Notes:</h4>
                     <p>${facture.notes}</p>
                 </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <div class="footer">
                 <p>Merci pour votre confiance</p>
@@ -1141,28 +1359,32 @@ function viewFacture(id) {
         </body>
         </html>
     `);
-    printWindow.document.close();
+  printWindow.document.close();
 }
 
 function updateStructureSelect() {
-    const select = document.getElementById('factureStructure');
-    select.innerHTML = '<option value="">Sélectionner une structure</option>' +
-        structures.map(s => `<option value="${s.id}">${s.nom} (${s.quartier})</option>`).join('');
+  const select = document.getElementById("factureStructure");
+  select.innerHTML =
+    '<option value="">Sélectionner une structure</option>' +
+    structures
+      .map((s) => `<option value="${s.id}">${s.nom} (${s.quartier})</option>`)
+      .join("");
 }
 
 function renderFactures() {
-    const facturesTable = document.getElementById('facturesTable');
-    
-    if (factures.length === 0) {
-        facturesTable.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">Aucune facture enregistrée.</p>';
-        return;
-    }
+  const facturesTable = document.getElementById("facturesTable");
 
-    const sortedFactures = [...factures].sort((a, b) => 
-        new Date(b.dateEmission) - new Date(a.dateEmission)
-    );
+  if (factures.length === 0) {
+    facturesTable.innerHTML =
+      '<p style="text-align: center; color: #718096; padding: 40px;">Aucune facture enregistrée.</p>';
+    return;
+  }
 
-    facturesTable.innerHTML = `
+  const sortedFactures = [...factures].sort(
+    (a, b) => new Date(b.dateEmission) - new Date(a.dateEmission)
+  );
+
+  facturesTable.innerHTML = `
         <table>
             <thead>
                 <tr>
@@ -1178,33 +1400,53 @@ function renderFactures() {
                 </tr>
             </thead>
             <tbody>
-                ${sortedFactures.map(facture => {
-                    const structure = structures.find(s => s.id === facture.structureId);
-                    const structureNom = structure ? structure.nom : 'Structure supprimée';
-                    const quartier = structure ? structure.quartier : '-';
-                    const statusClass = facture.statut === 'payée' ? 'status-payee' : 
-                                       facture.statut === 'en retard' ? 'status-retard' : 'status-impayee';
-                    
+                ${sortedFactures
+                  .map((facture) => {
+                    const structure = structures.find(
+                      (s) => s.id === facture.structureId
+                    );
+                    const structureNom = structure
+                      ? structure.nom
+                      : "Structure supprimée";
+                    const quartier = structure ? structure.quartier : "-";
+                    const statusClass =
+                      facture.statut === "payée"
+                        ? "status-payee"
+                        : facture.statut === "en retard"
+                        ? "status-retard"
+                        : "status-impayee";
+
                     return `
                         <tr>
                             <td><strong>${facture.numero}</strong></td>
                             <td>${structureNom}</td>
                             <td><span class="quartier-badge">${quartier}</span></td>
                             <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                ${facture.description || '-'}
+                                ${facture.description || "-"}
                             </td>
-                            <td><strong>${formatMontant(facture.montant)} FCFA</strong></td>
+                            <td><strong>${formatMontant(
+                              facture.montant
+                            )} FCFA</strong></td>
                             <td>${formatDate(facture.dateEmission)}</td>
                             <td>${formatDate(facture.dateEcheance)}</td>
-                            <td><span class="status-badge ${statusClass}">${capitalizeFirst(facture.statut)}</span></td>
+                            <td><span class="status-badge ${statusClass}">${capitalizeFirst(
+                      facture.statut
+                    )}</span></td>
                             <td>
-                                <button class="btn-edit" onclick="viewFacture(${facture.id})" title="Voir/Imprimer">👁️</button>
-                                <button class="btn-edit" onclick="editFacture(${facture.id})" title="Modifier">✏️</button>
-                                <button class="btn-delete" onclick="deleteFacture(${facture.id})" title="Supprimer">🗑️</button>
+                                <button class="btn-edit" onclick="viewFacture(${
+                                  facture.id
+                                })" title="Voir/Imprimer">👁️</button>
+                                <button class="btn-edit" onclick="editFacture(${
+                                  facture.id
+                                })" title="Modifier">✏️</button>
+                                <button class="btn-delete" onclick="deleteFacture(${
+                                  facture.id
+                                })" title="Supprimer">🗑️</button>
                             </td>
                         </tr>
                     `;
-                }).join('')}
+                  })
+                  .join("")}
             </tbody>
         </table>
     `;
@@ -1212,14 +1454,18 @@ function renderFactures() {
 
 // UTILITAIRES
 function formatMontant(montant) {
-    return new Intl.NumberFormat('fr-FR').format(montant);
+  return new Intl.NumberFormat("fr-FR").format(montant);
 }
 
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }
 
 function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
