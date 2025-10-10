@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionnaire de Factures par Quartier</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>📊 Gestionnaire de Factures par Quartier</h1>
+            <p>Suivi des structures et de leurs factures selon les quartiers d'Abidjan</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Tableau de Bord</button>
+            <button class="tab-btn" onclick="switchTab('structures')">Structures</button>
+            <button class="tab-btn" onclick="switchTab('factures')">Factures</button>
+            <button class="tab-btn" onclick="switchTab('configuration')">⚙️ Configuration</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+        </div>
+
+        <!-- Structures Tab -->
+        <div id="structures" class="tab-content">
+            <div class="content-box">
+                <div class="content-header">
+                    <h2>Gestion des Structures</h2>
+                    <button class="btn-primary" onclick="showStructureForm()">➕ Nouvelle Structure</button>
+                </div>
+
+                <div id="structureForm" class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #2d3748;">Nouvelle Structure</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nom de la structure *</label>
+                            <input type="text" id="structureNom" placeholder="Ex: Restaurant Le Palmier">
+                        </div>
+                        <div class="form-group">
+                            <label>Quartier *</label>
+                            <select id="structureQuartier">
+                                <option value="">Sélectionner un quartier</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Adresse</label>
+                            <input type="text" id="structureAdresse" placeholder="Ex: Rue des Jardins">
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" id="structureTelephone" placeholder="Ex: +225 01 02 03 04 05">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="structureEmail" placeholder="Ex: contact@structure.com">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" onclick="saveStructure()">💾 Enregistrer</button>
+                        <button class="btn-secondary" onclick="cancelStructureForm()">✖ Annuler</button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" class="search-input" id="searchStructure" placeholder="🔍 Rechercher une structure..." oninput="filterStructures()">
+                    <select class="filter-select" id="filterQuartier" onchange="filterStructures()">
+                        <option value="">Tous les quartiers</option>
+                    </select>
+                </div>
+
+                <div id="structuresList"></div>
+            </div>
+        </div>
+
+        <!-- Factures Tab -->
+        <div id="factures" class="tab-content">
+            <div class="content-box">
+                <div class="content-header">
+                    <h2>Gestion des Factures</h2>
+                    <button class="btn-primary" onclick="showFactureForm()">➕ Nouvelle Facture</button>
+                </div>
+
+                <div id="factureForm" class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #2d3748;">Nouvelle Facture</h3>
+                    
+                    <!-- Informations générales -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Structure *</label>
+                            <select id="factureStructure">
+                                <option value="">Sélectionner une structure</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Numéro de facture *</label>
+                            <input type="text" id="factureNumero" placeholder="Ex: FACT-2025-001">
+                        </div>
+                        <div class="form-group">
+                            <label>Date d'émission *</label>
+                            <input type="date" id="factureDateEmission">
+                        </div>
+                        <div class="form-group">
+                            <label>Date d'échéance *</label>
+                            <input type="date" id="factureDateEcheance">
+                        </div>
+                        <div class="form-group">
+                            <label>Statut *</label>
+                            <select id="factureStatut">
+                                <option value="impayée">Impayée</option>
+                                <option value="payée">Payée</option>
+                                <option value="en retard">En retard</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group" style="margin: 20px 0;">
+                        <label>Description de la facture</label>
+                        <textarea id="factureDescription" placeholder="Ex: Services de restauration - Septembre 2025" 
+                                  style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 1em; min-height: 80px; font-family: inherit;"></textarea>
+                    </div>
+
+                    <!-- Articles -->
+                    <div style="margin: 30px 0;">
+                        <h4 style="color: #2d3748; margin-bottom: 15px;">Articles / Lignes de facturation</h4>
+                        <div id="articlesContainer"></div>
+                    </div>
+
+                    <!-- TVA et Remise -->
+                    <div class="form-grid" style="max-width: 600px; margin-left: auto;">
+                        <div class="form-group">
+                            <label>TVA (%)</label>
+                            <input type="number" id="factureTVA" value="18" min="0" max="100" step="0.01" onchange="calculateFactureTotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>Remise (%)</label>
+                            <input type="number" id="factureRemise" value="0" min="0" max="100" step="0.01" onchange="calculateFactureTotal()">
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group" style="margin: 20px 0;">
+                        <label>Notes / Conditions de paiement</label>
+                        <textarea id="factureNotes" placeholder="Ex: Paiement sous 30 jours, par virement bancaire..." 
+                                  style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 1em; min-height: 80px; font-family: inherit;"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-primary" onclick="saveFacture()">💾 Enregistrer</button>
+                        <button class="btn-secondary" onclick="cancelFactureForm()">✖ Annuler</button>
+                    </div>
+                </div>
+
+                <div id="facturesTable"></div>
+            </div>
+        </div>
+
+        <!-- Configuration Tab -->
+        <div id="configuration" class="tab-content">
+            <div class="content-box">
+                <div class="content-header">
+                    <h2>⚙️ Configuration des Quartiers/Zones</h2>
+                    <button class="btn-primary" onclick="showQuartierForm()">➕ Nouveau Quartier</button>
+                </div>
+
+                <div style="background: #fffaf0; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                    <p style="color: #92400e; margin: 0;">
+                        <strong>💡 Astuce:</strong> Personnalisez les quartiers/zones selon votre ville ou pays. 
+                        Ces quartiers seront utilisés pour organiser vos structures et factures.
+                    </p>
+                </div>
+
+                <div id="quartierForm" class="form-container">
+                    <h3 style="margin-bottom: 20px; color: #2d3748;">Ajouter un Quartier/Zone</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nom du quartier/zone *</label>
+                            <input type="text" id="quartierNom" placeholder="Ex: Centre-ville, Zone industrielle, etc." onkeypress="if(event.key==='Enter') saveQuartier()">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" onclick="saveQuartier()">💾 Enregistrer</button>
+                        <button type="button" class="btn-secondary" onclick="cancelQuartierForm()">✖ Annuler</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <button class="btn-secondary" onclick="resetToDefaultQuartiers()">
+                        🔄 Réinitialiser avec les quartiers d'Abidjan
+                    </button>
+                </div>
+
+                <div id="quartiersList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
