@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestionnaire de Factures par Quartier</title>
+    <title>GFQ test</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2VzdGlvbiBGYWN0dXJhdGlvbiIsInNob3J0X25hbWUiOiJGYWN0dXJlcyIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjNEY0NkU1IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBQkFBQUFBUUNBWUFBQUFmOC85aEFBQUFBWEVTUjBJQXJzNGM2UUFBQUFSblFVMUJBQUN4and2OFlRVUFBQUFKY0VoWmN3QUFEc01BQUE3REFjZHZxR1FBQUFBMVNVUkJWRGpMWTJNQUFBQ01jbEJNVkVYLy8vOEFBQUJFVGxBcWVBQUFBQUJKUkVGVUtNOWpZd0FBQUl4eVVFeFVSZi8vL3dBQUFFUk9VQ3A0QUFBQUFFbEVRVlFvejJOakFBQUFqSEpRVEZSRi8vLy9BQUFBUkU1UUtuZ0FBQUFBWWxKRVJVVUFBQVFBQUFBQkFBQUE1UUFBQUFYRUNUd0FBQUFBRWxGVGtTdVFtQ0MiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn1dfQ==">
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -32,12 +32,10 @@
         </button>
       </div>
 
-      <!-- Dashboard Tab -->
       <div id="dashboard" class="tab-content active">
         <div class="dashboard-grid" id="dashboardGrid"></div>
       </div>
 
-      <!-- Structures Tab -->
       <div id="structures" class="tab-content">
         <div class="content-box">
           <div class="content-header">
@@ -122,7 +120,6 @@
         </div>
       </div>
 
-      <!-- Factures Tab -->
       <div id="factures" class="tab-content">
         <div class="content-box">
           <div class="content-header">
@@ -137,7 +134,6 @@
               Nouvelle Facture
             </h3>
 
-            <!-- Informations générales -->
             <div class="form-grid">
               <div class="form-group">
                 <label>Structure *</label>
@@ -171,25 +167,15 @@
               </div>
             </div>
 
-            <!-- Description -->
             <div class="form-group" style="margin: 20px 0">
-              <label>Description de la facture</label>
+              <label>Description générale de la facture</label>
               <textarea 
                 id="factureDescription"
-                placeholder="Ex: Services de restauration - Septembre 2025"
-                style="
-                  width: 100%;
-                  padding: 12px;
-                  border: 1px solid #cbd5e0;
-                  border-radius: 8px;
-                  font-size: 1em;
-                  min-height: 80px;
-                  font-family: inherit;
-                "
+                rows="3" 
+                placeholder="Décrivez l'objet de la facture (Ex: Services de restauration - Septembre 2025)"
               ></textarea>
             </div>
 
-            <!-- Articles -->
             <div style="margin: 30px 0">
               <h4 style="color: #2d3748; margin-bottom: 15px">
                 Articles / Lignes de facturation
@@ -197,7 +183,6 @@
               <div id="articlesContainer"></div>
             </div>
 
-            <!-- TVA et Remise -->
             <div class="form-grid" style="max-width: 600px; margin-left: auto">
               <div class="form-group">
                 <label>TVA (%)</label>
@@ -225,7 +210,6 @@
               </div>
             </div>
 
-            <!-- Notes -->
             <div class="form-group" style="margin: 20px 0">
               <label>Notes / Conditions de paiement</label>
               <textarea
@@ -253,11 +237,10 @@
             </div>
           </div>
 
-          <div id="facturesTable"></div>
+          <div id="facturesList"></div>
         </div>
       </div>
 
-      <!-- Configuration Tab -->
       <div id="configuration" class="tab-content">
         <div class="content-box">
           <div class="content-header">
@@ -325,6 +308,18 @@
           <div id="quartiersList"></div>
         </div>
       </div>
+    </div>
+    
+    <div id="factureModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeFactureModal()">&times;</span>
+            <div id="factureDetailsContent">
+                <p>Chargement de la facture...</p>
+            </div>
+            <div class="modal-actions" style="margin-top: 30px; text-align: right;">
+                <button class="btn-secondary" onclick="printFactureDetails()">🖨️ Imprimer</button>
+            </div>
+        </div>
     </div>
 
     <script src="main.js"></script>
