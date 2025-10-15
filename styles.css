@@ -725,6 +725,7 @@ textarea {
   .tabs,
   .btn-delete,
   .btn-edit,
+  .footer-container,
   #quartierFacturesModal {
     /* Masque la modale de liste si elle est ouverte */
     display: none !important;
