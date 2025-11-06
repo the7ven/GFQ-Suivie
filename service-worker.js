@@ -1,5 +1,7 @@
-// Nom du cache (incrémentez cette version chaque fois que vous modifiez les fichiers statiques)
-const CACHE_NAME = 'gfq-cache-v1';
+// Fichier: service-worker.js
+
+// Nom du cache (INCÉMENTÉ À v2 pour forcer la mise à jour du cache)
+const CACHE_NAME = 'gfq-cache-v2'; 
 
 // Liste des fichiers essentiels à mettre en cache pour le fonctionnement hors ligne
 const urlsToCache = [
@@ -7,6 +9,7 @@ const urlsToCache = [
     'index.html',
     'styles.css',
     'main.js',
+    'data-management.js', // <--- AJOUT DU NOUVEAU FICHIER
     // Ajoutez ici d'autres ressources critiques comme les icônes, images si vous en avez
     // Note: Les polices Google (Poppins) ne sont pas incluses car cela nécessite une stratégie différente
 ];
@@ -34,7 +37,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    // Supprime les anciens caches qui ne correspondent pas au nom actuel
+                    // Supprimer les caches qui ne correspondent pas au CACHE_NAME actuel (nettoyage)
                     if (cacheName !== CACHE_NAME) {
                         console.log('Service Worker: Suppression de l\'ancien cache:', cacheName);
                         return caches.delete(cacheName);
@@ -45,21 +48,17 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Événement 'fetch' : Interception des requêtes réseau
+// Événement de récupération (fetch) : Stratégie Cache-First pour les ressources statiques
 self.addEventListener('fetch', (event) => {
-    // Ignorer les requêtes spécifiques (ex: requêtes d'extensions ou API)
-    if (event.request.url.startsWith('chrome-extension://')) {
+    // Ne pas intercepter les requêtes non-GET ou externes
+    if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
         return;
     }
     
-    // Stratégie "Cache First, puis Network"
-    // Le Service Worker essaie d'abord de trouver la ressource dans le cache.
-    // Si elle est là, il la sert immédiatement (rapide, fonctionne hors ligne).
-    // Sinon, il va chercher sur le réseau.
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
-                // Cache hit - retourner la réponse du cache
+                // Réponse trouvée dans le cache
                 if (response) {
                     return response;
                 }
@@ -87,7 +86,6 @@ self.addEventListener('fetch', (event) => {
             })
             .catch(() => {
                 // En cas d'échec total (hors ligne et ressource non dans le cache)
-                // Optionnel : retourner une page 'offline.html' si vous l'aviez
                 // Pour cette application, nous laissons le navigateur afficher son message d'erreur
             })
     );

@@ -13,7 +13,7 @@
         <h1>📊 Gestionnaire de Factures par Quartier</h1>
         <p>
           Suivi des structures et de leurs factures selon les quartiers
-          d'Abidjan
+          
         </p>
       </div>
 
@@ -305,8 +305,39 @@
             </button>
           </div>
 
+
+           <div class="content-header">
+        <h2>Importation & Exportation de Données</h2>
+    </div>
+    
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px; padding: 15px; border: 1px solid var(--border-light); border-radius: 8px;">
+            <h4>Exporter les Données (Sauvegarde)</h4>
+            <p style="font-size: 0.9em; margin-bottom: 15px; color: var(--secondary-color);">
+                Sauvegardez l'intégralité de votre base de données (structures, factures, quartiers) au format **JSON**.
+            </p>
+            <button class="btn-primary" onclick="exportData()">
+                ⬇️ Télécharger la Sauvegarde
+            </button>
+        </div>
+        
+        <div style="flex: 1; min-width: 250px; padding: 15px; border: 1px solid var(--border-light); border-radius: 8px;">
+            <h4>Importer les Données (Restauration)</h4>
+            <p style="font-size: 0.9em; margin-bottom: 15px; color: var(--secondary-color);">
+                Chargez un fichier de sauvegarde **(.json)** pour restaurer les données. Ceci remplacera les données existantes.
+            </p>
+            <input type="file" id="importFile" accept=".json" style="margin-bottom: 10px; width: 100%;">
+            <button class="btn-primary" onclick="handleImport()">
+                ⬆️ Importer et Remplacer
+            </button>
+        </div>
+    </div>
+
           <div id="quartiersList"></div>
         </div>
+
+
+       
       </div>
     </div>
     
@@ -346,7 +377,14 @@
         </div>
     </footer>
 
-    <script>
+  
+    
+
+    <script src="main.js"></script>
+
+    <script src="data-management.js"></script>
+
+      <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js')
@@ -359,8 +397,6 @@
         });
       }
     </script>
-    
 
-    <script src="main.js"></script>
   </body>
 </html>
