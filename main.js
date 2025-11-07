@@ -282,14 +282,14 @@ function handleImport() {
 function getDefaultQuartiers() {
     // Les ID seront attribués par IndexedDB lors de la sauvegarde
     return [
-        { nom: "Cocody" },
-        { nom: "Plateau" },
-        { nom: "Adjamé" },
-        { nom: "Yopougon" },
-        { nom: "Marcory" },
-        { nom: "Abobo" },
-        { nom: "Koumassi" },
-        { nom: "Treichville" }
+        { nom: "AKWA" },
+        { nom: "BONANJO" },
+        { nom: "BONAPRISO" },
+        { nom: "BONAMOUSSADI" },
+        { nom: "BONABERI" },
+        { nom: "BALI" },
+        { nom: "NDOKOTTI" },
+        { nom: "DEIDO" }
     ];
 }
 
