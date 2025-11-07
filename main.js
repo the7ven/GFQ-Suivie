@@ -35,6 +35,7 @@ function openDB() {
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
+            // Utilisation des noms d'Object Stores 'structures', 'factures', 'quartiers'
             if (!db.objectStoreNames.contains('structures')) {
                 db.createObjectStore('structures', { keyPath: 'id', autoIncrement: true });
             }
@@ -138,6 +139,141 @@ async function loadData() {
         // Fallback ou message d'erreur supplémentaire si nécessaire
     }
 }
+
+// ===============================================
+// FONCTIONS D'EXPORTATION ET D'IMPORTATION 
+// ===============================================
+
+/**
+ * Exporte toutes les données de la DB (factures, structures, quartiers) dans un fichier JSON.
+ */
+function exportData() {
+    if (!db) return;
+    
+    // Utiliser les Object Stores actuels : factures, structures, quartiers
+    const tx = db.transaction(['factures', 'structures', 'quartiers'], 'readonly');
+    
+    const facturesRequest = tx.objectStore('factures').getAll();
+    const structuresRequest = tx.objectStore('structures').getAll();
+    const quartiersRequest = tx.objectStore('quartiers').getAll();
+
+    // Attendre que toutes les données soient récupérées
+    Promise.all([
+        new Promise(r => facturesRequest.onsuccess = () => r(facturesRequest.result)),
+        new Promise(r => structuresRequest.onsuccess = () => r(structuresRequest.result)),
+        new Promise(r => quartiersRequest.onsuccess = () => r(quartiersRequest.result))
+    ]).then(([factures, structures, quartiers]) => {
+        const data = {
+            // Clés JSON adaptées aux noms des Object Stores
+            factures,
+            structures,
+            quartiers,
+            exportDate: new Date().toISOString(),
+            version: DB_VERSION
+        };
+
+        // Création d'un Blob (fichier) JSON à télécharger
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `facturesdb-export-${new Date().toISOString().slice(0,10)}.json`; 
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        alert('Données exportées avec succès!');
+    }).catch(error => {
+        console.error("Erreur lors de l'exportation des données:", error);
+        alert("Une erreur est survenue lors de l'exportation.");
+    });
+}
+
+/**
+ * Importe les données à partir d'un fichier JSON, remplaçant les données existantes.
+ * Cette fonction est maintenant nommée 'handleImport' pour correspondre à votre HTML.
+ */
+function handleImport() {
+    if (!db) return;
+    
+    // Récupérer le fichier sélectionné par l'input
+    const fileInput = document.getElementById('importFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert("Veuillez d'abord sélectionner un fichier JSON à importer.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            
+            if (!confirm('Attention : Cela va **effacer** et remplacer toutes les données existantes (Factures, Structures, Quartiers). Continuer?')) {
+                // S'assurer de réinitialiser le champ si l'utilisateur annule
+                fileInput.value = '';
+                return;
+            }
+
+            // Utiliser les Object Stores actuels : factures, structures, quartiers
+            const tx = db.transaction(['factures', 'structures', 'quartiers'], 'readwrite');
+            
+            // 1. Vider les stores existants
+            tx.objectStore('factures').clear();
+            tx.objectStore('structures').clear();
+            tx.objectStore('quartiers').clear();
+
+            // 2. Ajouter les nouvelles données (retirer l'ancien ID pour que IndexedDB auto-incrémente)
+            const factureStore = tx.objectStore('factures');
+            const structureStore = tx.objectStore('structures');
+            const quartierStore = tx.objectStore('quartiers');
+
+            // Les noms des clés JSON sont maintenant factures, structures, quartiers
+            (data.factures || []).forEach(item => {
+                const { id, ...rest } = item; // Retire l'ancien ID
+                factureStore.add(rest);
+            });
+
+            (data.structures || []).forEach(item => {
+                const { id, ...rest } = item;
+                structureStore.add(rest);
+            });
+
+            (data.quartiers || []).forEach(item => {
+                const { id, ...rest } = item;
+                quartierStore.add(rest);
+            });
+
+            tx.oncomplete = async () => {
+                // Recharger toutes les données en mémoire
+                await loadData();
+
+                alert('Données importées avec succès! L\'application va se rafraîchir.');
+                // Recharger les données des vues pour refléter les changements
+                updateDashboard();
+                renderStructures(); 
+                renderQuartiers(); 
+                renderFactures();
+                updateStructureSelect();
+                updateAllQuartiersSelects();
+            };
+
+            tx.onerror = () => {
+                console.error("Erreur lors de la transaction d'importation:", tx.error);
+                alert('Erreur lors de l\'importation des données.');
+            };
+
+        } catch (error) {
+            alert('Erreur: Le fichier sélectionné est invalide ou corrompu. Assurez-vous d\'importer un fichier d\'exportation valide.');
+            console.error(error);
+        } finally {
+            // Réinitialiser l'input file dans tous les cas pour permettre une nouvelle sélection
+            fileInput.value = '';
+        }
+    };
+    reader.readAsText(file);
+}
+
 
 // ===============================================
 // GESTION DES QUARTIERS
@@ -872,6 +1008,7 @@ function renderFactures(list = factures) {
 
 // ===============================================
 // TABLEAU DE BORD (DASHBOARD)
+// ... (Reste des fonctions dashboard)
 // ===============================================
 
 function updateDashboard() {
@@ -1105,6 +1242,7 @@ function showQuartierFactures(quartier) {
 
 // ===============================================
 // UTILITAIRES & LOGIQUE UI
+// ... (Reste des fonctions utilitaires et UI)
 // ===============================================
 
 function formatMontant(montant) {
@@ -1168,7 +1306,7 @@ function generateFactureHTML(facture, structure) {
         <div class="modal-header">
             <h2 style="color: var(--primary-color);">FACTURE N° ${facture.numero}</h2>
             <div class="modal-actions">
-                <button onclick="printFactureDetails()" class="btn-primary" style="background: var(--accent-color); margin-right: 10px;">🖨️ Imprimer</button>
+                <button onclick="printFactureDetails()" class="btn-primary" style="background: var(--accent-color); margin-right: 10px;">்ச Imprimer</button>
                 <button onclick="closeFactureModal()" class="btn-primary" style="background: var(--danger-color); font-size: 1.1em;">✖ Fermer</button>
             </div>
         </div>
@@ -1316,10 +1454,6 @@ async function initApp() {
 }
 
 
-
-
-
-
 // Exposer les fonctions au scope global (window) pour l'appel depuis l'HTML
 window.switchTab = switchTab;
 window.showStructureForm = showStructureForm;
@@ -1349,6 +1483,11 @@ window.viewFacture = viewFacture;
 window.closeFactureModal = closeFactureModal; 
 window.printFactureDetails = printFactureDetails; 
 window.showQuartierFactures = showQuartierFactures; 
+
+// Fonctions d'Importation/Exportation (Exposées)
+window.exportData = exportData;
+window.handleImport = handleImport; // CORRIGÉ pour correspondre à votre HTML
+
 
 // Lancer l'initialisation après le chargement du DOM
 document.addEventListener("DOMContentLoaded", initApp);

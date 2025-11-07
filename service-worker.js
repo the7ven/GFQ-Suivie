@@ -9,7 +9,7 @@ const urlsToCache = [
     'index.html',
     'styles.css',
     'main.js',
-    'data-management.js', // <--- AJOUT DU NOUVEAU FICHIER
+    
     // Ajoutez ici d'autres ressources critiques comme les icônes, images si vous en avez
     // Note: Les polices Google (Poppins) ne sont pas incluses car cela nécessite une stratégie différente
 ];
