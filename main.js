@@ -1008,7 +1008,6 @@ function renderFactures(list = factures) {
 
 // ===============================================
 // TABLEAU DE BORD (DASHBOARD)
-// ... (Reste des fonctions dashboard)
 // ===============================================
 
 function updateDashboard() {
@@ -1242,7 +1241,6 @@ function showQuartierFactures(quartier) {
 
 // ===============================================
 // UTILITAIRES & LOGIQUE UI
-// ... (Reste des fonctions utilitaires et UI)
 // ===============================================
 
 function formatMontant(montant) {
@@ -1325,10 +1323,13 @@ function generateFactureHTML(facture, structure) {
                     <p>Tel: 00 00 00 00</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--secondary-color);">Client</h4>
+                    
                     <p><strong>${structure ? structure.nom : "Structure Inconnue"}</strong></p>
                     <p>${structure ? structure.adresse : "N/A"}</p>
                     <p>${structure ? structure.quartier : "N/A"}</p>
+                    <p>Tel: ${structure && structure.telephone ? structure.telephone : "N/A"}</p>
+                    <p>Email: ${structure && structure.email ? structure.email : "N/A"}</p>
+                    
                 </div>
             </div>
 
