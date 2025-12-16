@@ -424,7 +424,7 @@ function renderQuartiers() {
                         <td data-label="Quartier">${q.nom}</td>
                         <td data-label="Actions">
                             <button class="btn-edit" onclick="showQuartierForm(${JSON.stringify(q).replace(/"/g, '&quot;')})">✏️ Modifier</button>
-                            <button class="btn-delete" onclick="deleteQuartier(${q.id})">🗑️ Supprimer</button>
+                            <button class="btn-delete" onclick="deleteQuartier(${q.id})"> Supprimer</button>
                         </td>
                     </tr>
                 `).join('')}
