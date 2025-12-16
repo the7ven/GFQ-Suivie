@@ -1065,7 +1065,7 @@ function updateDashboard() {
 
         dashboardHTML += `
             <div class="quartier-card" onclick="showQuartierFactures('${q.nom}')" style="cursor: pointer;">
-                <h3>📍 ${q.nom}</h3>
+                <h3> ${q.nom}</h3>
                 <div class="stat-row">
                     <span class="stat-label">Structures:</span>
                     <span class="stat-value">${stat.totalStructures}</span>
@@ -1087,7 +1087,7 @@ function updateDashboard() {
                     <span class="stat-value" style="color: var(--danger-color);">${stat.facturesEnRetard}</span>
                 </div>
                 <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-                    <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em;">👁️ Cliquer pour voir les factures</span>
+                    <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em;"> Cliquer pour voir les factures</span>
                 </div>
             </div>
         `;
