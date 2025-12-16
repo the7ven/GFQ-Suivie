@@ -1141,7 +1141,7 @@ function showQuartierFactures(quartier) {
     // Remplir le contenu de la modale en utilisant les classes CSS
     modalContent.innerHTML = `
         <div class="modal-header">
-            <h2>📍 Factures du quartier ${quartier}</h2>
+            <h2>  Factures du quartier ${quartier}</h2>
             <button onclick="document.getElementById('quartierFacturesModal').remove()" class="btn-primary" style="background: var(--danger-color); font-size: 1.1em;">✖ Fermer</button>
         </div>
 
@@ -1299,79 +1299,174 @@ function switchTab(tabId) {
 function generateFactureHTML(facture, structure) {
     const totalRow = calculateFactureTotalFromData(facture);
     
-    // Génération du contenu HTML de la facture pour la modale
     return `
-        <div class="modal-header">
-            <h2 style="color: var(--primary-color);">FACTURE N° ${facture.numero}</h2>
-            <div class="modal-actions">
-                <button onclick="printFactureDetails()" class="btn-primary" style="background: var(--accent-color); margin-right: 10px;">்ச Imprimer</button>
-                <button onclick="closeFactureModal()" class="btn-primary" style="background: var(--danger-color); font-size: 1.1em;">✖ Fermer</button>
-            </div>
-        </div>
-        
-        <div id="factureDetailsContent">
-            <div class="facture-header-print" style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px;">
-                <h3 style="color: var(--primary-color);">Émise le ${formatDate(facture.dateEmission)} - Échéance: ${formatDate(facture.dateEcheance)}</h3>
-                
+        <div class="facture-campub-print" style="max-width: 800px; margin: 0 auto; background: linear-gradient(135deg, #d4f1f4 0%, #a8e6f0 100%); padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; position: relative;">
+            
+            <!-- Header avec logo et informations -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #0066a1; padding-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 50px; height: 50px; background: #0066a1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">CP</div>
+                    <div style="color: #0066a1; font-size: 32px; font-weight: bold; letter-spacing: 2px;">CAMPUB</div>
                 </div>
-
-            <div style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 0.9em;">
-                <div>
-                    <h4 style="color: var(--secondary-color);">Émetteur (Votre Organisation)</h4>
-                    <p>Nom de l'entreprise</p>
-                    <p>Adresse, Ville</p>
-                    <p>Tel: 00 00 00 00</p>
-                </div>
-                <div>
-                    
-                    <p><strong>${structure ? structure.nom : "Structure Inconnue"}</strong></p>
-                    <p>${structure ? structure.adresse : "N/A"}</p>
-                    <p>${structure ? structure.quartier : "N/A"}</p>
-                    <p>Tel: ${structure && structure.telephone ? structure.telephone : "N/A"}</p>
-                    <p>Email: ${structure && structure.email ? structure.email : "N/A"}</p>
-                    
+                <div style="text-align: right;">
+                    <div style="color: #0066a1; font-weight: bold; font-size: 14px; margin-bottom: 5px;">COMMUNAUTÉ URBAINE</div>
+                    <div style="color: #0066a1; font-weight: bold; font-size: 14px; margin-bottom: 5px;">DE DOUALA</div>
+                    <div style="color: #d32f2f; font-weight: bold; font-size: 14px;">N° ${facture.numero}</div>
+                    <div style="font-size: 10px; color: #333; margin-top: 5px;">Arrondissement Douala 3e</div>
                 </div>
             </div>
 
-            <h4 style="margin-bottom: 10px; color: var(--text-dark);">Description: ${facture.description || 'N/A'}</h4>
+            <!-- Sous-titre avec coordonnées -->
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="font-size: 11px; color: #0066a1; font-weight: bold; line-height: 1.4;">
+                    PROPRIETAIRE SOUS TOUTES LES FORMES<br>
+                    Siège Douala - Siège social Douala - BP: 5909<br>
+                    +237 33 43 53 85 / 243 57 94 58 / 233 42 78 33
+                </div>
+            </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead>
-                    <tr style="background-color: #EDF2F7;">
-                        <th style="padding: 10px; border: 1px solid #CBD5E0;">Désignation</th>
-                        <th style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">Qté</th>
-                        <th style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">Prix Unit.</th>
-                        <th style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${facture.articles.map(a => `
+            <!-- Titre principal -->
+            <div style="background: white; padding: 12px; text-align: center; margin-bottom: 20px; border: 2px solid #0066a1; border-radius: 5px;">
+                <h2 style="color: #0066a1; font-size: 13px; line-height: 1.5; margin: 0;">
+                    BULLETIN D'ÉMISSION DU PRODUIT DE CONCESSION DES EMPLACEMENTS<br>
+                    PUBLICITAIRES DE LA VILLE DE DOUALA
+                </h2>
+            </div>
+
+            <!-- Section formulaire avec informations -->
+            <div style="background: rgba(255,255,255,0.7); padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Doit/versante :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${structure ? structure.nom : ''}</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">B.P :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 0.3; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Quartier :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${structure && structure.quartier ? structure.quartier : ''}</div>
+                    </div>
+                    <div style="flex: 0.4; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Rue :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${structure && structure.adresse ? structure.adresse : ''}</div>
+                    </div>
+                    <div style="flex: 0.3; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Porte :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Genre de PUBLICITE :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${facture.description || 'Publicité / Affichage'}</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Nature de droits :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">Droits de concession d'emplacement</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Type de support :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${facture.notes || ''}</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Période d'imposition :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">Du ${formatDate(facture.dateEmission)} au ${formatDate(facture.dateEcheance)}</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px;">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        <label style="font-weight: bold; margin-right: 8px; white-space: nowrap; color: #333;">Dimension :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px;"></div>
+                        <label style="font-weight: bold; margin: 0 8px; white-space: nowrap; color: #333;">Tél :</label>
+                        <div style="flex: 1; border-bottom: 1px dotted #333; height: 20px; padding-left: 5px;">${structure && structure.telephone ? structure.telephone : ''}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tableau des recettes -->
+            <div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
                         <tr>
-                            <td style="padding: 10px; border: 1px solid #CBD5E0;">${a.designation}</td>
-                            <td style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">${a.quantite}</td>
-                            <td style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">${formatMontant(a.prix)}</td>
-                            <td style="padding: 10px; border: 1px solid #CBD5E0; text-align: right;">${formatMontant(a.quantite * a.prix)}</td>
+                            <th style="border: 2px solid #0066a1; padding: 10px; text-align: center; font-size: 11px; background: #0066a1; color: white; font-weight: bold;">NATURE DE LA RECETTE</th>
+                            <th style="border: 2px solid #0066a1; padding: 10px; text-align: center; font-size: 11px; background: #0066a1; color: white; font-weight: bold;">IMPUTATION</th>
+                            <th style="border: 2px solid #0066a1; padding: 10px; text-align: center; font-size: 11px; background: #0066a1; color: white; font-weight: bold;">DETAIL</th>
+                            <th style="border: 2px solid #0066a1; padding: 10px; text-align: center; font-size: 11px; background: #0066a1; color: white; font-weight: bold;">TOTAL</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-                <tfoot>
-                    <tr><td colspan="3" style="padding: 10px; text-align: right; font-weight: 600;">Sous-total HT:</td><td style="padding: 10px; text-align: right; border: 1px solid #CBD5E0;">${formatMontant(totalRow.subTotal)} FCFA</td></tr>
-                    <tr><td colspan="3" style="padding: 10px; text-align: right; font-weight: 600;">TVA (${facture.tva}%):</td><td style="padding: 10px; text-align: right; border: 1px solid #CBD5E0;">${formatMontant(totalRow.tvaAmount)} FCFA</td></tr>
-                    <tr><td colspan="3" style="padding: 10px; text-align: right; font-weight: 600;">Remise (${facture.remise}%):</td><td style="padding: 10px; text-align: right; border: 1px solid #CBD5E0;">-${formatMontant(totalRow.remiseAmount)} FCFA</td></tr>
-                    <tr style="background-color: var(--primary-color); color: white;">
-                        <td colspan="3" style="padding: 12px; text-align: right; font-weight: 700;">TOTAL TTC:</td>
-                        <td style="padding: 12px; text-align: right; font-weight: 700;">${formatMontant(totalRow.total)} FCFA</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <div style="margin-top: 30px; padding: 15px; background: #F7FAFC; border: 1px solid #EDF2F7; border-radius: 5px;">
-                <h4 style="color: var(--secondary-color); margin-bottom: 5px;">Notes / Conditions:</h4>
-                <p style="font-size: 0.9em; white-space: pre-wrap;">${facture.notes || 'Paiement à réception de la facture.'}</p>
+                    </thead>
+                    <tbody>
+                        ${facture.articles.map(a => `
+                            <tr>
+                                <td style="border: 2px solid #0066a1; padding: 10px; font-size: 11px;">${a.designation}</td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; text-align: center; font-size: 11px;">${a.quantite}</td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; text-align: right; font-size: 11px;">${formatMontant(a.prix)} FCFA</td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; text-align: right; font-size: 11px;">${formatMontant(a.quantite * a.prix)} FCFA</td>
+                            </tr>
+                        `).join('')}
+                        
+                        ${Array(Math.max(0, 4 - facture.articles.length)).fill(0).map(() => `
+                            <tr>
+                                <td style="border: 2px solid #0066a1; padding: 10px; height: 35px; font-size: 11px;"></td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; height: 35px; font-size: 11px;"></td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; height: 35px; font-size: 11px;"></td>
+                                <td style="border: 2px solid #0066a1; padding: 10px; height: 35px; font-size: 11px;"></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <!-- Montant en lettres -->
+                <div style="margin-top: 10px; text-align: center; font-weight: bold; font-size: 12px; padding: 8px; background: #f0f0f0; border: 1px solid #0066a1;">
+                    Montant en lettres: ${facture.montantEnLettres || '........................'}
+                </div>
             </div>
+
+            <!-- Totaux -->
+            ${totalRow.tvaAmount > 0 || totalRow.remiseAmount > 0 ? `
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; font-size: 11px;">
+                <div style="width: 40%;">
+                    ${totalRow.tvaAmount > 0 ? `<div style="padding: 8px; text-align: right; border: 1px solid #0066a1; background: white; font-weight: 600;">TVA (${facture.tva}%): ${formatMontant(totalRow.tvaAmount)} FCFA</div>` : ''}
+                    ${totalRow.remiseAmount > 0 ? `<div style="padding: 8px; text-align: right; border: 1px solid #0066a1; background: white; font-weight: 600;">Remise (${facture.remise}%): -${formatMontant(totalRow.remiseAmount)} FCFA</div>` : ''}
+                </div>
+            </div>
+            ` : ''}
+
+            <!-- Footer avec note et signature -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 15px; font-size: 11px;">
+                <div style="font-weight: bold; color: #333;">
+                    N.B: Ceci n'est pas un reçu
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">NET A PAYER ........................ ${formatMontant(totalRow.total)} FCFA</div>
+                    <div>A ........................ le ........................</div>
+                    <div style="font-style: italic; color: #555; margin-top: 10px;">Le Régisseur</div>
+                </div>
+            </div>
+
         </div>
     `;
 }
+
+
+
+// ===============================================
+// MODIFICATIONS APPORTÉES À PARTIR D'ICI
+// ===============================================
+
+// ... (votre code jusqu'à la ligne 987 environ)
+
 
 function viewFacture(id) {
     const facture = factures.find(f => f.id === id);
@@ -1382,7 +1477,8 @@ function viewFacture(id) {
     
     const structure = structures.find(s => s.id === facture.structureId);
     
-    const factureContent = generateFactureHTML(facture, structure);
+    // Le contenu du bulletin SANS le header de la modale
+    const bulletinHTML = generateFactureHTML(facture, structure); 
     
     // 1. Fermer toute autre modale ouverte (y compris la modale de quartier)
     document.querySelectorAll('.modal').forEach(m => {
@@ -1397,7 +1493,21 @@ function viewFacture(id) {
     
     const modalContent = document.createElement("div");
     modalContent.classList.add("modal-content"); // Utilise la taille par défaut (plus petite)
-    modalContent.innerHTML = factureContent;
+
+    // Ajout du header de la modale et du contenu du bulletin
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h2>BULLETIN N° ${facture.numero}</h2>
+            <div class="modal-actions">
+                <button onclick="printFactureDetails()" class="btn-primary" style="background: var(--accent-color); margin-right: 10px;">\u{1F5B6} Imprimer</button>
+                <button onclick="closeFactureModal()" class="btn-primary" style="background: var(--danger-color); font-size: 1.1em;">✖ Fermer</button>
+            </div>
+        </div>
+        
+        <div id="facturePrintContainer">
+            ${bulletinHTML}
+        </div>
+    `;
     
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
@@ -1423,10 +1533,86 @@ function closeFactureModal() {
     }
 }
 
+
+// ... (votre fonction closeFactureModal reste inchangée à la ligne 1018)
+
+
+// ===============================================
+// 2. Nouvelle fonction printFactureDetails (Ligne ~1025)
+// ===============================================
+
+// C'est ici que nous fixons le problème en utilisant une fenêtre temporaire.
 function printFactureDetails() {
-    // Le CSS gère l'affichage en mode impression
-    window.print();
+    const printContent = document.getElementById('facturePrintContainer');
+    if (!printContent) {
+        alert("Erreur: Contenu de la facture introuvable pour l'impression. Assurez-vous d'être dans la modale de vue.");
+        return;
+    }
+
+    // 1. Cloner le contenu à imprimer (pour ne pas perturber le DOM)
+    const contentToPrint = printContent.cloneNode(true);
+    
+    // 2. Ouvrir une nouvelle fenêtre/onglet pour l'impression
+    const printWindow = window.open('', '_blank');
+    
+    // 3. Écrire le HTML complet de la facture
+    printWindow.document.write('<html><head><title>Impression Bulletin</title>');
+    
+    // 4. Injecter des styles d'impression de base (très important)
+    printWindow.document.write(`
+        <style>
+            @media print {
+                /* Définir une marge pour l'impression */
+                @page { margin: 10mm; } 
+                body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                /* Forcer l'affichage des couleurs de tableau */
+                table, th, td { border-color: #007bff !important; } 
+                /* Forcer les couleurs du bulletin à être visibles/noires en impression pour l'encre */
+                .facture-campub-print h3, .facture-campub-print h4, .facture-campub-print strong, 
+                .facture-campub-print p, .facture-campub-print span { color: black !important; }
+                /* Masquer tout ce qui pourrait interférer */
+                .modal-header, .modal-actions { display: none; }
+                /* Assurer que la mise en page flex fonctionne en impression (souvent nécessaire) */
+                .facture-campub-print > div { 
+                    display: flex !important; 
+                    flex-wrap: wrap !important;
+                    page-break-inside: avoid; /* Éviter que des blocs importants ne soient coupés */
+                }
+                .facture-campub-print > div > span { width: 50% !important; }
+            }
+            /* Styles de base pour l'aperçu dans la nouvelle fenêtre */
+            .facture-campub-print { padding: 20px; }
+            .facture-campub-print table { width: 100%; border-collapse: collapse; }
+            .facture-campub-print th, .facture-campub-print td { border: 1px solid #007bff; padding: 10px; }
+            .facture-campub-print h3, .facture-campub-print h4, .facture-campub-print strong { color: #007bff; }
+        </style>
+    `);
+    
+    printWindow.document.write('</head><body>');
+    // Seul le contenu du bulletin est copié
+    printWindow.document.write(contentToPrint.innerHTML); 
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    
+    // 5. Déclencher l'impression une fois le contenu chargé
+    printWindow.onload = function() {
+        printWindow.print();
+        // Optionnel: ne pas fermer pour que l'utilisateur puisse le consulter/sauvegarder en PDF
+        // printWindow.close(); 
+    };
+    
+    // Fallback avec une petite temporisation si l'événement onload ne se déclenche pas immédiatement
+    setTimeout(() => {
+        if (printWindow.document.readyState === 'complete') {
+            printWindow.print();
+        }
+    }, 300);
 }
+// ... (le reste de votre code)
+
+
+
+
 
 // ===============================================
 // EXPOSITION DES FONCTIONS ET DÉMARRAGE 
