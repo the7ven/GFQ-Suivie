@@ -1300,30 +1300,9 @@ function generateFactureHTML(facture, structure) {
     const totalRow = calculateFactureTotalFromData(facture);
     
     return `
-        <div class="facture-campub-print" style="max-width: 800px; margin: 0 auto; background: linear-gradient(135deg, #d4f1f4 0%, #a8e6f0 100%); padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; position: relative;">
-            
-            <!-- Header avec logo et informations -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #0066a1; padding-bottom: 15px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 50px; height: 50px; background: #0066a1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">CP</div>
-                    <div style="color: #0066a1; font-size: 32px; font-weight: bold; letter-spacing: 2px;">CAMPUB</div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="color: #0066a1; font-weight: bold; font-size: 14px; margin-bottom: 5px;">COMMUNAUTÉ URBAINE</div>
-                    <div style="color: #0066a1; font-weight: bold; font-size: 14px; margin-bottom: 5px;">DE DOUALA</div>
-                    <div style="color: #d32f2f; font-weight: bold; font-size: 14px;">N° ${facture.numero}</div>
-                    <div style="font-size: 10px; color: #333; margin-top: 5px;">Arrondissement Douala 3e</div>
-                </div>
-            </div>
+       
 
-            <!-- Sous-titre avec coordonnées -->
-            <div style="text-align: center; margin-bottom: 25px;">
-                <div style="font-size: 11px; color: #0066a1; font-weight: bold; line-height: 1.4;">
-                    PROPRIETAIRE SOUS TOUTES LES FORMES<br>
-                    Siège Douala - Siège social Douala - BP: 5909<br>
-                    +237 33 43 53 85 / 243 57 94 58 / 233 42 78 33
-                </div>
-            </div>
+           
 
             <!-- Titre principal -->
             <div style="background: white; padding: 12px; text-align: center; margin-bottom: 20px; border: 2px solid #0066a1; border-radius: 5px;">
