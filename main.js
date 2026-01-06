@@ -850,7 +850,7 @@ function showFactureForm(facture = null) {
         document.getElementById('factureStatut').value = 'impayée';
         document.getElementById('factureDescription').value = '';
         document.getElementById('factureNotes').value = '';
-        document.getElementById('factureTVA').value = '18';
+        document.getElementById('factureTVA').value = '3';
         document.getElementById('factureRemise').value = '0';
         
         // Article par défaut

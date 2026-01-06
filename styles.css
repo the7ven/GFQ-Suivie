@@ -30,7 +30,8 @@ body {
 }
 
 .container {
-  max-width: 100%;
+  max-width: 1200;
+  width: 100%;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 12px;
