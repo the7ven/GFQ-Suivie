@@ -1437,7 +1437,7 @@ function generateFactureHTML(facture, structure) {
             ${totalRow.tvaAmount > 0 || totalRow.remiseAmount > 0 ? `
             <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; font-size: 11px;">
                 <div style="width: 40%;">
-                    ${totalRow.tvaAmount > 0 ? `<div style="padding: 8px; text-align: right; border: 1px solid #0066a1; background: white; font-weight: 600;">TVA (${facture.tva}%): ${formatMontant(totalRow.tvaAmount)} FCFA</div>` : ''}
+                    ${totalRow.tvaAmount > 0 ? `<div style="padding: 8px; text-align: right; border: 1px solid #0066a1; background: white; font-weight: 600;">DSTP (${facture.tva}%): ${formatMontant(totalRow.tvaAmount)} FCFA</div>` : ''}
                     ${totalRow.remiseAmount > 0 ? `<div style="padding: 8px; text-align: right; border: 1px solid #0066a1; background: white; font-weight: 600;">Remise (${facture.remise}%): -${formatMontant(totalRow.remiseAmount)} FCFA</div>` : ''}
                 </div>
             </div>
